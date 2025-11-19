@@ -1,6 +1,9 @@
 {
   "dependencies": {
     "ejs": "^3.1.10",
-    "express": "^5.1.0"
-  }
+    "express": "^5.1.0",
+    "multer": "^2.0.2",
+    "pg": "^8.16.3"
+  },
+  "type": "module"
 }

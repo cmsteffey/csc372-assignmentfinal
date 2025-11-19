@@ -1,7 +1,14 @@
 ﻿<div class="header">
     <div class="header-item-container">
         <b>EZAccounting</b>
-        <a>Home</a>
-        <a>About</a>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <div class="header-account">
+            <% if(typeof account !== "undefined") {%>
+                <a class="account-link" href="/my-account"><%= account.firstName%></a>
+            <% } else { %>
+                <a class="login-link" href="/login">Log In</a>
+            <% } %>
+        </div>
     </div>
 </div>

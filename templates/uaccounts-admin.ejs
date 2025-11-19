@@ -1,0 +1,32 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Accounts Administration Page</title>
+    <%- include('partials/commoncss') %>
+</head>
+<body>
+<%- include('partials/header') %>
+<main>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for(let account of accounts) { %>
+                <tr>
+                    <td><%= account.id %></td>
+                    <td><%= account.username %></td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

@@ -1,0 +1,25 @@
+﻿.header {
+    position: fixed;
+    height: 7%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: hsl(from var(--theme-background) h s calc(l * 0.9));
+}
+.header-item-container {
+    position: absolute;
+    left: 2ch;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 2ch;
+    height: 100%;
+    color: var(--theme-main-text)
+}
+.header-item-container a {
+    text-decoration: underline;
+    color: var(--theme-main-text);
+}
+.header-account {
+    margin-left: auto;
+}
