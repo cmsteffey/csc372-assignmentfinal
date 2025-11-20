@@ -1,0 +1,31 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Register</title>
+    <%- include('partials/commoncss') %>
+</head>
+<body>
+<%- include('partials/header') %>
+<main>
+    <form method="POST" enctype="multipart/form-data">
+        <label>
+            Email:
+            <input type="email" name="email">
+        </label><br>
+        <label>
+            Username:
+            <input type="text" name="username">
+        </label><br>
+        <label>
+            Password:
+            <input type="password" name="password">
+        </label><br>
+        <button type="submit">Register</button>
+    </form>
+</main>
+</body>
+</html>

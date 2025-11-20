@@ -4,7 +4,7 @@ export async function getAllFAccounts() {
     return (await pool.query("SELECT * FROM financial_accounts")).rows.map(loadCategoryString)
 }
 export async function getFAccountsForUser(userId){
-    return (await pool.query("SELECT * FROM financial_accounts where owner = $1", [userId])).rows
+    return (await pool.query("SELECT * FROM financial_accounts where owner = $1", [userId])).rows.map(loadCategoryString)
 }
 function loadCategoryString(row){
     return {
