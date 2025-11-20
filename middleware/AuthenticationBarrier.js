@@ -1,6 +1,4 @@
-﻿import pool from "../models/Pool.js";
-import sessionModel from "../models/Session.js";
-import uAccountModel from "../models/UAccount.js";
+﻿import sessionModel from "../models/Session.js";
 export default async function(req, res, next){
     let cookieHeader = req.headers.cookie;
     if(!cookieHeader){
