@@ -20,11 +20,20 @@ async function handleLoginForm(req, res){
         res.redirect("/login?e");
         return;
     }
-    if(crypto.argon2Sync("argon2id", {
-        ...argonConfiguration,
-        message: req.body.password,
-        nonce: Buffer.from(partialAccount.salt, "hex")
-    }).toString("hex") !== partialAccount.passhash){
+    let inputPasswordHash = await new Promise((resolve, reject) => {
+        crypto.argon2("argon2id", {
+            ...argonConfiguration,
+            message: req.body.password,
+            nonce: Buffer.from(partialAccount.salt, "hex")
+        }, (errpr, result) => {
+            if(error){
+                reject(error);
+            } else {
+                resolve(result)
+            }
+        })
+    });
+    if(inputPasswordHash.toString("hex") !== partialAccount.passhash){
         res.redirect("/login?e");
         return;
     }
