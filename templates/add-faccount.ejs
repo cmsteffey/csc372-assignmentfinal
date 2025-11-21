@@ -12,7 +12,21 @@
 <%- include('partials/header')%>
 <main>
     <h1>Add an account</h1>
-    <form></form>
+    <form enctype="multipart/form-data" method="POST">
+        <label>
+            Account Name:
+            <input type="text" name="nickname">
+        </label><br>
+        <label>
+            Account Type:
+            <select name="category">
+                <% for (let category of categories) { %>
+                    <option value="<%=category.value %>"><%= category.name %></option>
+                <% } %>
+            </select>
+        </label><br>
+        <button type="submit">Add</button>
+    </form>
 </main>
 </body>
 </html>

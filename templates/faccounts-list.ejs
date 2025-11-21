@@ -1,0 +1,57 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>My Accounts</title>
+    <%- include('partials/commoncss') %>
+    <%- include('partials/table-basedcss') %>
+</head>
+<body>
+<%- include('partials/header') %>
+<main>
+    <h1><%= pageTitle ?? "Accounts" %></h1>
+    <% if (aleEquation ?? false) { %>
+        <h2>$<%= Math.floor(categoryTotals.asset / 100) %>.<%= (categoryTotals.asset % 100).toString().padStart(2, '0') %> = $<%= Math.floor(categoryTotals.liability / 100) %>.<%= (categoryTotals.liability % 100).toString().padStart(2, '0') %> + $<%= Math.floor(categoryTotals.equity / 100) %>.<%= (categoryTotals.equity     % 100).toString().padStart(2, '0') %></h2>
+    <% } %>
+    <table class="main-table">
+        <thead>
+            <tr>
+                <th style="width: 15ch">Account Type</th>
+                <th style="width: 20ch">Account Name</th>
+                <th style="width: 20ch">Balance</th>
+                <th></th>
+                <th style="width: 16ch" class="ra"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (accounts.length === 0) { %>
+                <tr>
+                    <td class="empty-text" colspan="5"><p>No accounts found.</p></td>
+                </tr>
+            <% } else { %>
+                <% for(let i = 0; i < accounts.length; ++i){ %>
+                    <% account = accounts[i] %>
+                    <tr>
+                        <td><%= account.categoryString %></td>
+                        <td><%= account.nickname %></td>
+                        <td>$<%= Math.floor(account.balance / 100) %>.<%= (account.balance % 100).toString().padStart(2, '0') %></td>
+                        <td></td>
+                        <td><a href="/add-journal-entry">Add Journal Entry</a></td>
+                    </tr>
+                    <% if (i === accounts.length - 1 || accounts[i].category !== accounts[i + 1].category) { %>
+                        <tr>
+                            <td><strong><%= account.categoryString %></strong></td>
+                            <td><strong>Category Total</strong></td>
+                            <td><strong>$<%= Math.floor(categoryTotals[account.categoryString.toLowerCase()] / 100) %>.<%= (categoryTotals[account.categoryString.toLowerCase()] % 100).toString().padStart(2, '0') %></strong></td>
+                        </tr>
+                    <% } %>
+                <% } %>
+            <% }%>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>
