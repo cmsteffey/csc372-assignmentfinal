@@ -4,7 +4,9 @@
     top: 0;
     left: 0;
     width: 100%;
-    background-color: hsl(from var(--theme-background) h s calc(l * 0.9));
+    background-color: hsl(from var(--theme-header-background) h s calc(l * 0.9));
+    font-size: 1.3em;
+
 }
 .header-item-container {
     position: absolute;
@@ -14,11 +16,12 @@
     align-items: center;
     gap: 2ch;
     height: 100%;
-    color: var(--theme-main-text)
+    color: var(--theme-header-main-text);
+    width: calc(100% - (2 * 2ch));
 }
 .header-item-container a {
     text-decoration: underline;
-    color: var(--theme-main-text);
+    color: var(--theme-header-main-text);
 }
 .header-account {
     margin-left: auto;

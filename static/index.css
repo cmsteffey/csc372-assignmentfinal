@@ -1,24 +1,10 @@
 ﻿:root {
-    --theme-background: #444444;
-    --theme-main-text: #fff;
+    --theme-header-background: #444444;
+    --theme-header-main-text: #fff;
     --header-height: 7%;
 }
 main {
     position: absolute;
     width: 100%;
     top: var(--header-height);
-}
-table {
-    border-collapse: collapse;
-}
-thead {
-    border-top: 1px solid black;
-    border-left: 1px solid black;
-    border-right: 1px solid black;
-}
-
-tbody {
-    border-bottom: 1px solid black;
-    border-right: 1px solid black;
-    border-left: 1px solid black;
 }

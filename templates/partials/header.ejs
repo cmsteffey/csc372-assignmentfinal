@@ -3,9 +3,10 @@
         <b>EZAccounting</b>
         <a href="/">Home</a>
         <a href="/about">About</a>
+        <a href="/my-accounts">My Accounts</a>
         <div class="header-account">
-            <% if(typeof account !== "undefined") {%>
-                <a class="account-link" href="/my-account"><%= account.firstName%></a>
+            <% if(typeof authenticatedUser !== "undefined") {%>
+                <a class="account-link" href="/me"><%= authenticatedUser.username %></a>
             <% } else { %>
                 <a class="login-link" href="/login">Log In</a>
             <% } %>

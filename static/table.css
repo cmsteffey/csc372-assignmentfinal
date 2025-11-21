@@ -1,0 +1,28 @@
+﻿main > .main-table {
+    width: 85%;
+    margin: 0 7.5%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+main > .main-table > thead {
+    border: 1px solid black;
+}
+
+main > .main-table > tbody {
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+    border-left: 1px solid black;
+}
+main > .main-table > tbody:empty::after {
+    content: 'No rows.';
+}
+.empty-text {
+    color: #222;
+}
+.empty-text > p {
+    margin: 0 auto;
+    width: max-content;
+}
+main > .main-table > thead > tr > th {
+    text-align: left;
+}
