@@ -1,20 +1,30 @@
 ﻿import sessionModel from "../models/Session.js";
-export default async function(req, res, next){
+export async function authenticationMiddleware(req, res, next){
     let cookieHeader = req.headers.cookie;
     if(!cookieHeader){
-        res.redirect('/login');
+        res.locals.authenticatedUser = req.authenticatedUser = null;
+        next();
         return;
     }
     let sessionValue = cookieHeader.split(/;\s*/).filter(x=>x.startsWith('session='))[0]?.substring(8);
     if(!sessionValue || sessionValue.length !== 36){
-        res.redirect('/login');
+        res.locals.authenticatedUser = req.authenticatedUser = null;
+        next();
         return;
     }
     let account = await sessionModel.getAccountWithSessionUuid(sessionValue);
     if(account === null){
-        res.redirect('/login');
+        res.locals.authenticatedUser = req.authenticatedUser = null;
+        next();
         return;
     }
     res.locals.authenticatedUser = req.authenticatedUser = account;
     next();
+}
+export async function authenticationBarrier(req, res, next){
+    if(req.authenticatedUser !== null){
+        next();
+        return;
+    }
+    res.redirect("/login");
 }
