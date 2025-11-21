@@ -25,7 +25,7 @@ async function handleLoginForm(req, res){
             ...argonConfiguration,
             message: req.body.password,
             nonce: Buffer.from(partialAccount.salt, "hex")
-        }, (errpr, result) => {
+        }, (error, result) => {
             if(error){
                 reject(error);
             } else {
