@@ -6,6 +6,10 @@ import argonConfiguration from "../configurations/ArgonConfiguration.js";
 function loginPage(req, res){
     res.render('login');``
 }
+async function logout(req, res){
+    res.header("Set-Cookie", "session=");
+    res.redirect("/");
+}
 async function handleLoginForm(req, res){
     if(!req.body.username || typeof req.body.username !== 'string'){
         res.status(400).send('Username required');
@@ -41,4 +45,4 @@ async function handleLoginForm(req, res){
     res.header("Set-Cookie", "session=" + key);
     res.redirect("/dashboard");
 }
-export default {handleLoginForm, loginPage};
+export default {handleLoginForm, loginPage, logout};

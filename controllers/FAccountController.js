@@ -10,7 +10,7 @@ async function myFAccountsPage(req,res){
     });
 }
 async function addFAccountPage(req,res){
-    res.render('add-faccount', {categories: fAccountType.map((x, i) => ({name: x, value: i}))});
+    res.render('add-faccount', {categories: fAccountType.map((x, i) => ({name: x.name, value: i}))});
 }
 async function handleAddFAccountForm(req, res){
     let categoryNumber;

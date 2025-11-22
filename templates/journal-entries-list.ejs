@@ -1,0 +1,45 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Journal Entries</title>
+    <%- include('partials/commoncss') %>
+    <%- include('partials/table-basedcss') %>
+</head>
+<body>
+<%- include('partials/header') %>
+<main>
+    <h1><%= pageTitle ?? "Journal Entries" %></h1>
+    <table class="main-table">
+        <thead>
+            <tr>
+                <th>Account</th>
+                <th></th>
+                <th>Debit</th>
+                <th>Credit</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for(let i = 0; i < portions.length; ++i) { %>
+                <% var portion = portions[i] %>
+                <% if(i === 0 || portions[i].id !== portions[i - 1].id) { %>
+                    <tr>
+                        <td colspan="2"><%= portion.name %></td>
+                    </tr>
+                <% } %>
+                <tr>
+                    <td><%= portion.faccount_nickname %></td>
+                    <td></td>
+                    <td><% if (portion.isDebit) { %> $<%=Math.floor(portion.amount / 100)%>.<%=(portion.amount % 100).toString().padStart(2, '0')%> <% } %></td>
+                    <td><% if (!portion.isDebit) { %> $<%=Math.floor(portion.amount / 100)%>.<%=(portion.amount % 100).toString().padStart(2, '0')%> <% } %></td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</main>
+
+</body>
+</html>

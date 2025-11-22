@@ -2,6 +2,7 @@
 import uAccountRequestRouter from "./routers/UAccountRequestRouter.js";
 import sessionRequestRouter from "./routers/SessionRouter.js";
 import fAccountRouter from "./routers/FAccountRouter.js";
+import journalEntryRouter from "./routers/JournalEntryRouter.js";
 import multer from "multer"
 import {authenticationMiddleware} from "./middleware/Authentication.js";
 
@@ -20,4 +21,5 @@ app.get("/", (req, res) => {
 app.use("/", fAccountRouter);
 app.use("/", uAccountRequestRouter);
 app.use("/", sessionRequestRouter);
+app.use("/", journalEntryRouter);
 app.listen(5656)
