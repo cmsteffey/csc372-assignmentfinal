@@ -1,10 +1,27 @@
 ﻿:root {
     --theme-header-background: #444444;
     --theme-header-main-text: #fff;
+    --theme-header-light-text: #999;
+    --theme-error-color: #c00;
+    --theme-error-text: hsl(from var(--theme-error-color) h calc(s * 3) calc(l * 0.3));
+    --theme-error-background: hsl(from var(--theme-error-color) h s calc(l * 2));
+    --theme-error-border: hsl(from var(--theme-error-color) h s calc(l * 0.5));
     --header-height: 7%;
+    --header-gap: 0%;
 }
 main {
     position: absolute;
     width: 100%;
-    top: var(--header-height);
+    top: calc(var(--header-height) + var(--header-gap));
+    left: 0;
+    padding: 0 10px;
+}
+.error-div {
+    border: 1px solid var(--theme-error-border);
+    color: var(--theme-error-text);
+    background-color: var(--theme-error-background);
+    border-radius: 4px;
+    margin-bottom: 10px;
+    width: max-content;
+    padding: 2px;
 }

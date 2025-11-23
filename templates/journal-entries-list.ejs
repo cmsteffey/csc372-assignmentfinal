@@ -26,15 +26,15 @@
             <% for(let i = 0; i < portions.length; ++i) { %>
                 <% var portion = portions[i] %>
                 <% if(i === 0 || portions[i].id !== portions[i - 1].id) { %>
-                    <tr>
-                        <td colspan="2"><%= portion.name %></td>
+                    <tr class="section-name">
+                        <td colspan="4" ><%= portion.name %></td>
                     </tr>
                 <% } %>
                 <tr>
                     <td><%= portion.faccount_nickname %></td>
                     <td></td>
-                    <td><% if (portion.isDebit) { %> $<%=Math.floor(portion.amount / 100)%>.<%=(portion.amount % 100).toString().padStart(2, '0')%> <% } %></td>
-                    <td><% if (!portion.isDebit) { %> $<%=Math.floor(portion.amount / 100)%>.<%=(portion.amount % 100).toString().padStart(2, '0')%> <% } %></td>
+                    <td><% if (portion.amount > 0) { %> $<%=Math.floor(portion.amount / 100)%>.<%=(portion.amount % 100).toString().padStart(2, '0')%> <% } %></td>
+                    <td><% if (portion.amount < 0) { %> $<%=Math.floor(-portion.amount / 100)%>.<%=(-portion.amount % 100).toString().padStart(2, '0')%> <% } %></td>
                 </tr>
             <% } %>
         </tbody>

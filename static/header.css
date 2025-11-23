@@ -26,3 +26,6 @@
 .header-account {
     margin-left: auto;
 }
+.light {
+    color: var(--theme-header-light-text)
+}

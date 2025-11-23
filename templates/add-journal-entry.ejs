@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Add a Journal Entry</title>
+    <%- include('partials/commoncss') %>
+    <%- include('partials/table-basedcss')%>
+</head>
+<body>
+<%- include('partials/header') %>
+<main>
+    <h1>Add a Journal Entry</h1>
+    <% if(typeof error !== "undefined") { %>
+        <div class="error-div">
+            <span><%=error%></span>
+        </div>
+    <% } %>
+    <form method="POST" enctype="multipart/form-data">
+        <button formaction="/add-journal-entry-submit"><strong>Submit Entry</strong></button><br><br>
+        <input type="hidden" name="rowCount" value="<%= rowCount %>">
+        <label>Entry name: <input type="text" name="name"></label>
+        <table class="main-table">
+            <thead>
+                <tr>
+                    <th>Account</th>
+                    <th>Debit</th>
+                    <th>Credit</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for(let i = 0; i < rowCount; ++i) { %>
+                    <tr>
+                        <td><select name="account_id_<%= i %>">
+                            <% for(let j = 0; j < accounts.length; ++j) { %>
+                                <% if(j === 0 || accounts[j].category !== accounts[j-1].category) {%>
+                                    <optgroup label="<%= accounts[j].categoryString %>">
+                                <% } %>
+                                <option value="<%= accounts[j].id %>"<%if(prefill && prefill["account_id_" + i] === accounts[j].id.toString()){%> selected<%}%>><%= accounts[j].nickname %></option>
+                                <% if(j === accounts.length - 1 || accounts[j].category !== accounts[j+1].category) { %>
+                                    </optgroup>
+                                <% } %>
+                            <% } %>
+                        </select></td>
+                        <td><input type="number" name="debit_<%= i %>"<%if(prefill && prefill["debit_" + i]?.length) { %> value="<%=prefill["debit_" + i]%>"<% }%>></td>
+                        <td><input type="number" name="credit_<%= i %>"<%if(prefill && prefill["credit_" + i]?.length) { %> value="<%=prefill["credit_" + i]%>"<% }%>></td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+        <button>+ Add Row</button><br>
+    </form>
+</main>
+</body>
+</html>

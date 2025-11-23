@@ -6,11 +6,11 @@ import fAccountType from "./fAccountType.js"
 async function getFAccountsForUser(userId){
     return (await pool.query(
         "SELECT financial_account.*, COALESCE(SUM(transaction_portion.amount), 0) as balance FROM financial_account left join transaction_portion on transaction_portion.financial_account = financial_account.id where financial_account.owner = $1 group by financial_account.id order by category, LOWER(nickname)"
-        , [userId])).rows.map(loadCategoryString)
+        , [userId])).rows.map(x=>({...x, balance: fAccountType[x.category].debitIncrease ? x.balance : -x.balance})).map(loadCategoryString)
 }
 async function getCategoryTotals(userId){
     //Query returns [{category: number, total: number}], so beginning portion is filling in default 0s to be overwritten by results
-    return [...Array(fAccountType.length).keys()].map(x=>({category: x, total: 0})).concat((await pool.query("SELECT financial_account.category, SUM(transaction_portion.amount) as total from transaction_portion join financial_account on transaction_portion.financial_account = financial_account.id where financial_account.owner = $1 group by financial_account.category ", [userId])).rows).reduce((acc, x)=>({...acc, [fAccountType[x.category].name.toLowerCase()]: x.total}), {})
+    return [...Array(fAccountType.length).keys()].map(x=>({category: x, total: 0})).concat((await pool.query("SELECT financial_account.category, SUM(transaction_portion.amount) as total from transaction_portion join financial_account on transaction_portion.financial_account = financial_account.id where financial_account.owner = $1 group by financial_account.category ", [userId])).rows).reduce((acc, x)=>({...acc, [fAccountType[x.category].name.toLowerCase()]: fAccountType[x.category].debitIncrease ? x.total : -x.total}), {})
 }
 async function addFAccount(userId, category, nickname){
     return (await pool.query("INSERT INTO financial_account (owner, category, nickname) VALUES ($1, $2, $3) RETURNING id", [userId, category, nickname])).rows[0].id;
@@ -21,4 +21,11 @@ function loadCategoryString(row){
         categoryString: fAccountType[row.category].name
     }
 }
-export default {getFAccountsForUser, addFAccount, getCategoryTotals};
+async function getOwnerForAccounts(accounts){
+    if(accounts.length === 0){
+        return null;
+    }
+    let rows = (await pool.query("SELECT owner FROM financial_account WHERE id IN (" + [...accounts.keys()].map(x=>"$" + (x + 1)) + ")", accounts)).rows;
+    return rows.every((x, i, a) => x.owner === a[0].owner) && rows.length === accounts.length ? rows[0].owner : null;
+}
+export default {getFAccountsForUser, addFAccount, getCategoryTotals, getOwnerForAccounts};

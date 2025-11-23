@@ -26,3 +26,8 @@ main > .main-table > tbody:empty::after {
 main > .main-table > thead > tr > th {
     text-align: left;
 }
+.section-name > td{
+    background-color: #eee;
+    border-bottom: #000 solid 1px;
+    border-top: #000 solid 1px;
+}

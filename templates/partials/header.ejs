@@ -2,13 +2,16 @@
     <div class="header-item-container">
         <b>EZAccounting</b>
         <a href="/">Home</a>
-        <a href="/about">About</a>
+        <!--a href="/about">About</a-->
         <a href="/my-accounts">My Accounts</a>
+        <a href="/my-journal-entries">My Journal Entries</a>
         <div class="header-account">
             <% if(authenticatedUser) {%>
                 <a class="account-link" href="/me"><%= authenticatedUser.username %></a>
             <% } else { %>
                 <a class="login-link" href="/login">Log In</a>
+                <span class="light"> or </span>
+                <a class="login-link" href="/register">Register</a>
             <% } %>
         </div>
     </div>

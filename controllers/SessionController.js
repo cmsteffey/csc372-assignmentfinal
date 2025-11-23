@@ -43,6 +43,6 @@ async function handleLoginForm(req, res){
     }
     let key = await sessionModel.makeSession(partialAccount.id);
     res.header("Set-Cookie", "session=" + key);
-    res.redirect("/dashboard");
+    res.redirect("/my-accounts");
 }
 export default {handleLoginForm, loginPage, logout};

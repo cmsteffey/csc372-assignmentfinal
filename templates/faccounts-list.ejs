@@ -13,8 +13,11 @@
 <%- include('partials/header') %>
 <main>
     <h1><%= pageTitle ?? "Accounts" %></h1>
+    <a href="/add-account">Add Account</a><br>
+    <a href="/add-journal-entry">Add Journal Entry</a><br>
     <% if (aleEquation ?? false) { %>
-        <h2>$<%= Math.floor(categoryTotals.asset / 100) %>.<%= (categoryTotals.asset % 100).toString().padStart(2, '0') %> = $<%= Math.floor(categoryTotals.liability / 100) %>.<%= (categoryTotals.liability % 100).toString().padStart(2, '0') %> + $<%= Math.floor(categoryTotals.equity / 100) %>.<%= (categoryTotals.equity     % 100).toString().padStart(2, '0') %></h2>
+        <h2 style="width: max-content; margin: 0 auto;">$<%= Math.floor(categoryTotals.asset / 100) %>.<%= (categoryTotals.asset % 100).toString().padStart(2, '0') %> = $<%= Math.floor(categoryTotals.liability / 100) %>.<%= (categoryTotals.liability % 100).toString().padStart(2, '0') %> <%= categoryTotals.equity + categoryTotals.revenue > categoryTotals.expense ? "+" : "-"%> $<%= Math.floor(Math.abs(categoryTotals.equity - categoryTotals.expense + categoryTotals.revenue) / 100) %>.<%= (Math.abs(categoryTotals.equity - categoryTotals.expense + categoryTotals.revenue) % 100).toString().padStart(2, '0') %></h2>
+        <br>
     <% } %>
     <table class="main-table">
         <thead>
@@ -34,12 +37,18 @@
             <% } else { %>
                 <% for(let i = 0; i < accounts.length; ++i){ %>
                     <% account = accounts[i] %>
+                    <% if(i === 0 || accounts[i].category !== accounts[i - 1].category) { %>
+                        <tr class="section-name">
+                            <td colspan="5">
+                               <%= account.categoryString%> Accounts
+                            </td>
+                        </tr>
+                    <% } %>
                     <tr>
                         <td><%= account.categoryString %></td>
                         <td><%= account.nickname %></td>
                         <td>$<%= Math.floor(account.balance / 100) %>.<%= (account.balance % 100).toString().padStart(2, '0') %></td>
                         <td></td>
-                        <td><a href="/add-journal-entry">Add Journal Entry</a></td>
                     </tr>
                     <% if (i === accounts.length - 1 || accounts[i].category !== accounts[i + 1].category) { %>
                         <tr>
