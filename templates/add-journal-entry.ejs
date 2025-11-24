@@ -20,7 +20,7 @@
     <% } %>
     <form method="POST" enctype="multipart/form-data">
         <input type="hidden" name="rowCount" value="<%= rowCount %>">
-        <label>Entry name: <input style="width: 50ch" type="text" name="name"<% if(prefill && prefill.name) { %> value="<%=prefill.name%>"<% } %>></label>
+        <label>Entry name: <input style="width: 50ch" type="text" name="journal_entry_name"<% if(prefill && prefill.journal_entry_name) { %> value="<%=prefill.journal_entry_name%>"<% } %>></label>
         <table class="main-table">
             <thead>
                 <tr>

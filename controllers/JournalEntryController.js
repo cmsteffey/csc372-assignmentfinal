@@ -15,7 +15,7 @@ async function addJournalEntryPage(req,res){
     })
 }
 async function handleJournalEntryForm(req,res){
-    if(typeof req.body.name !== "string" || req.body.name.length === 0){
+    if(typeof req.body.journal_entry_name !== "string" || req.body.journal_entry_name.length === 0){
         res.render('add-journal-entry', {
             error: "Error: Entry name is required",
             prefill: req.body,
@@ -83,7 +83,7 @@ async function handleJournalEntryForm(req,res){
         });
         return;
     }
-    let journalEntryId = await journalEntryModel.createJournalEntry(req.body.name);
+    let journalEntryId = await journalEntryModel.createJournalEntry(req.body.journal_entry_name);
     await journalEntryModel.fillJournalEntry(journalEntryId, portions);
     res.redirect('/my-journal-entries');
 
