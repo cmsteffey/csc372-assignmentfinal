@@ -12,21 +12,26 @@
 <body>
 <%- include('partials/header') %>
 <main>
-    <h1><%= pageTitle ?? "Accounts" %></h1>
-    <a href="/add-account">Add Account</a><br>
-    <a href="/add-journal-entry">Add Journal Entry</a><br>
+
+    <div class="top-container">
+        <h1><%= pageTitle ?? "Accounts" %></h1>
+        <button class="top-end" type="button" style="font-size: 1em" popovertarget="add-popover"><strong>Add...</strong></button>
+    </div>
+    <h1 class="print-visible center">Account report for account <%= authenticatedUser.username %></h1>
+    <% var reportTime = new Date() %>
+    <h4 class="print-visible center">Accurate as of <%= reportTime.getFullYear() + "/" + (reportTime.getMonth()+1) + "/" + reportTime.getDate() + " at " + reportTime.getHours() + ":" + reportTime.getMinutes() + ":" + reportTime.getSeconds()%></h4>
     <% if (aleEquation ?? false) { %>
-        <h2 style="width: max-content; margin: 0 auto;">$<%= Math.floor(categoryTotals.asset / 100) %>.<%= (categoryTotals.asset % 100).toString().padStart(2, '0') %> = $<%= Math.floor(categoryTotals.liability / 100) %>.<%= (categoryTotals.liability % 100).toString().padStart(2, '0') %> <%= categoryTotals.equity + categoryTotals.revenue > categoryTotals.expense ? "+" : "-"%> $<%= Math.floor(Math.abs(categoryTotals.equity - categoryTotals.expense + categoryTotals.revenue) / 100) %>.<%= (Math.abs(categoryTotals.equity - categoryTotals.expense + categoryTotals.revenue) % 100).toString().padStart(2, '0') %></h2>
+        <h2 style="width: max-content; margin: 0 auto;">$<%= Math.floor(categoryTotals.asset / 100) %>.<%= (categoryTotals.asset % 100).toString().padStart(2, '0') %> = $<%= Math.floor(categoryTotals.liability / 100) %>.<%= (categoryTotals.liability % 100).toString().padStart(2, '0') %> <%= categoryTotals.equity + categoryTotals.revenue < categoryTotals.expense ? "-" : "+"%> $<%= Math.floor(Math.abs(categoryTotals.equity - categoryTotals.expense + categoryTotals.revenue) / 100) %>.<%= (Math.abs(categoryTotals.equity - categoryTotals.expense + categoryTotals.revenue) % 100).toString().padStart(2, '0') %></h2>
         <br>
     <% } %>
     <table class="main-table">
         <thead>
             <tr>
                 <th style="width: 15ch">Account Type</th>
-                <th style="width: 20ch">Account Name</th>
+                <th style="width: 40ch">Account Name</th>
                 <th style="width: 20ch">Balance</th>
                 <th></th>
-                <th style="width: 16ch" class="ra"></th>
+                <th class="ra"></th>
             </tr>
         </thead>
         <tbody>
@@ -46,7 +51,7 @@
                     <% } %>
                     <tr>
                         <td><%= account.categoryString %></td>
-                        <td><%= account.nickname %></td>
+                        <td><%= account.ticker ? "STOCK: " + account.ticker : account.nickname %><%if (account.ticker) { %>, <%= account.shares %> share<%=account.shares !== 1 ? "s" : ""%> <a href="/update-stock-account/<%=account.id%>">(Update value)</a><%}%></td>
                         <td>$<%= Math.floor(account.balance / 100) %>.<%= (account.balance % 100).toString().padStart(2, '0') %></td>
                         <td></td>
                     </tr>
@@ -62,5 +67,10 @@
         </tbody>
     </table>
 </main>
+<div popover id="add-popover" class="top-popover">
+    <a href="/add-account">Add Standard Account</a><br>
+    <a href="/add-stock-account">Add Stock Account</a><br>
+    <a href="/add-journal-entry">Add Journal Entry</a>
+</div>
 </body>
 </html>

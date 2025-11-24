@@ -1,0 +1,33 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <%- include('partials/commoncss')%>
+</head>
+<body>
+<%- include('partials/header')%>
+<main>
+    <h1>Add a Stock Account</h1>
+    <% if(typeof error !== "undefined") { %>
+    <div class="error-div">
+        <span><%=error%></span>
+    </div>
+    <% } %>
+    <form enctype="multipart/form-data" method="POST">
+        <label>
+            Ticker:
+            <input type="text" name="ticker">
+        </label><br>
+        <label>
+            Starting Shares:
+            <input type="number" name="starting_shares">
+        </label><br>
+        <button type="submit">Add</button>
+    </form>
+</main>
+</body>
+</html>

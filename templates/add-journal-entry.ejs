@@ -19,9 +19,8 @@
         </div>
     <% } %>
     <form method="POST" enctype="multipart/form-data">
-        <button formaction="/add-journal-entry-submit"><strong>Submit Entry</strong></button><br><br>
         <input type="hidden" name="rowCount" value="<%= rowCount %>">
-        <label>Entry name: <input type="text" name="name"></label>
+        <label>Entry name: <input style="width: 50ch" type="text" name="name"<% if(prefill && prefill.name) { %> value="<%=prefill.name%>"<% } %>></label>
         <table class="main-table">
             <thead>
                 <tr>
@@ -50,7 +49,8 @@
                 <% } %>
             </tbody>
         </table>
-        <button>+ Add Row</button><br>
+        <button formaction="/add-journal-entry">+ Add Row</button><br><br>
+        <button formaction="/add-journal-entry-submit"><strong>Submit Entry</strong></button>
     </form>
 </main>
 </body>

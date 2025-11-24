@@ -12,6 +12,27 @@ async function myFAccountsPage(req,res){
 async function addFAccountPage(req,res){
     res.render('add-faccount', {categories: fAccountType.map((x, i) => ({name: x.name, value: i}))});
 }
+async function addStockFAccountPage(req,res){
+    res.render('add-stock-faccount');
+}
+async function handleAddStockFAccountForm(req,res){
+    if(typeof req.body.ticker !== 'string' || req.body.ticker.length === 0){
+        res.render('add-stock-faccount', {
+            error: "Ticker missing",
+            prefill: req.body
+        });
+        return;
+    }
+    let starting_shares;
+    if(typeof req.body.starting_shares !== 'string' || isNaN(starting_shares = parseInt(req.body.starting_shares))){
+        res.render('add-stock-faccount', {
+            error: "Starting share count missing",
+            prefill: req.body
+        });
+    }
+    await fAccountModel.addStockFAccount(req.authenticatedUser.id, req.body.ticker, starting_shares);
+    res.redirect("/my-accounts");
+}
 async function handleAddFAccountForm(req, res){
     let categoryNumber;
     if(typeof req.body.category !== 'string' || isNaN(categoryNumber = parseInt(req.body.category)) || categoryNumber < 0 || categoryNumber > fAccountType.length){
@@ -27,4 +48,5 @@ async function handleAddFAccountForm(req, res){
 
 }
 
-export default {myFAccountsPage, addFAccountPage, handleAddFAccountForm};
+
+export default {myFAccountsPage, addFAccountPage, handleAddFAccountForm, addStockFAccountPage, handleAddStockFAccountForm};

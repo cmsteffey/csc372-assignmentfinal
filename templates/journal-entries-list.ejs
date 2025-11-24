@@ -12,30 +12,41 @@
 <body>
 <%- include('partials/header') %>
 <main>
-    <h1><%= pageTitle ?? "Journal Entries" %></h1>
+    <div class="top-container">
+        <h1><%= pageTitle ?? "Journal Entries" %></h1>
+    </div>
+    <a href="/add-journal-entry">+ Add a new entry</a><br><br>
     <table class="main-table">
         <thead>
             <tr>
-                <th>Account</th>
+                <th style="width: 40ch">Account</th>
+                <th style="width: 60ch">Description</th>
                 <th></th>
-                <th>Debit</th>
-                <th>Credit</th>
+                <th style="width: 10ch">Debit</th>
+                <th style="width: 10ch">Credit</th>
             </tr>
         </thead>
         <tbody>
-            <% for(let i = 0; i < portions.length; ++i) { %>
-                <% var portion = portions[i] %>
-                <% if(i === 0 || portions[i].id !== portions[i - 1].id) { %>
-                    <tr class="section-name">
-                        <td colspan="4" ><%= portion.name %></td>
+            <% if (portions.length === 0) { %>
+                <tr>
+                    <td class="empty-text" colspan="5"><p>No entries found.</p></td>
+                </tr>
+            <% } else { %>
+                <% for(let i = 0; i < portions.length; ++i) { %>
+                    <% var portion = portions[i] %>
+                    <% if(i === 0 || portions[i].id !== portions[i - 1].id) { %>
+                        <tr class="section-name">
+                            <td colspan="5" ><%= portion.name %></td>
+                        </tr>
+                    <% } %>
+                    <tr>
+                        <td><%= portion.faccount_nickname %></td>
+                        <td><%= portion.description %></td>
+                        <td></td>
+                        <td><% if (portion.amount > 0) { %> $<%=Math.floor(portion.amount / 100)%>.<%=(portion.amount % 100).toString().padStart(2, '0')%> <% } %></td>
+                        <td><% if (portion.amount < 0) { %> $<%=Math.floor(-portion.amount / 100)%>.<%=(-portion.amount % 100).toString().padStart(2, '0')%> <% } %></td>
                     </tr>
                 <% } %>
-                <tr>
-                    <td><%= portion.faccount_nickname %></td>
-                    <td></td>
-                    <td><% if (portion.amount > 0) { %> $<%=Math.floor(portion.amount / 100)%>.<%=(portion.amount % 100).toString().padStart(2, '0')%> <% } %></td>
-                    <td><% if (portion.amount < 0) { %> $<%=Math.floor(-portion.amount / 100)%>.<%=(-portion.amount % 100).toString().padStart(2, '0')%> <% } %></td>
-                </tr>
             <% } %>
         </tbody>
     </table>

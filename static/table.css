@@ -3,6 +3,8 @@
     margin: 0 7.5%;
     table-layout: fixed;
     border-collapse: collapse;
+
+    font-family: monospace;
 }
 main > .main-table > thead {
     border: 1px solid black;
@@ -30,4 +32,7 @@ main > .main-table > thead > tr > th {
     background-color: #eee;
     border-bottom: #000 solid 1px;
     border-top: #000 solid 1px;
+}
+tbody > tr:not(.section-name) {
+    border-top: 1px solid #AAA;
 }

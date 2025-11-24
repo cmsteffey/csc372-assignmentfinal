@@ -1,0 +1,31 @@
+﻿* {
+    display: none;
+}
+.main-table, html, body, main{
+    display: block !important;
+}
+.main-table thead {
+    display: table-header-group;
+}
+.main-table tbody {
+    display: table-row-group;
+}
+.main-table tfoot {
+    display: table-footer-group;
+}
+.main-table td, .main-table th {
+    display: table-cell !important;
+}
+.main-table td *, .main-table th * {
+    display: revert !important;
+}
+.main-table tr {
+    display: table-row !important;
+}
+.main-table {
+    table-layout: fixed !important;
+}
+.print-visible {
+    display: revert !important;
+    font-family: monospace;
+}

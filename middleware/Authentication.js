@@ -26,5 +26,10 @@ export async function authenticationBarrier(req, res, next){
         next();
         return;
     }
+    if(req.method === "POST"){
+        res.redirect("/login")
+        return;
+    }
+    res.header("Set-Cookie", "redir=" + req.path + "; HttpOnly")
     res.redirect("/login");
 }
