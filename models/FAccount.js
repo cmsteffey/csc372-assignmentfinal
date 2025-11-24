@@ -1,5 +1,5 @@
 import pool from "./Pool.js"
-import fAccountType from "./fAccountType.js"
+import fAccountType from "./FAccountType.js"
 /*async function getAllFAccounts() {
     return (await pool.query("SELECT * FROM financial_account order by owner, category, LOWER(nickname)")).rows.map(loadCategoryString)
 }*/
