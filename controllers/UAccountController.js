@@ -1,4 +1,4 @@
-﻿import accountModel from "../models/UAccount.js"
+import accountModel from "../models/UAccount.js"
 import sessionModel from "../models/Session.js"
 import crypto from "node:crypto"
 import argonConfiguration from "../configurations/ArgonConfiguration.js";

@@ -1,4 +1,4 @@
-﻿import fAccountController from "../controllers/FAccountController.js";
+import fAccountController from "../controllers/FAccountController.js";
 import {Router} from "express";
 import {authenticationBarrier} from "../middleware/Authentication.js";
 

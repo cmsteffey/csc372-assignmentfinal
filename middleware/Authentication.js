@@ -1,4 +1,4 @@
-﻿import sessionModel from "../models/Session.js";
+import sessionModel from "../models/Session.js";
 export async function authenticationMiddleware(req, res, next){
     let cookieHeader = req.headers.cookie;
     if(!cookieHeader){

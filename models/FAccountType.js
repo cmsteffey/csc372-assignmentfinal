@@ -1,4 +1,4 @@
-﻿export default [
+export default [
     {name: "Asset", debitIncrease: true},
     {name: "Expense", debitIncrease: true},
     {name: "Liability", debitIncrease: false},

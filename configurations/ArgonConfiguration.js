@@ -1,4 +1,4 @@
-﻿export default {
+export default {
     parallelism: 4,
     tagLength: 64,
     memory: 65536,

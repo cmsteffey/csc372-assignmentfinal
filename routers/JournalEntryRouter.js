@@ -1,4 +1,4 @@
-﻿import {Router} from "express";
+import {Router} from "express";
 import journalEntryController from "../controllers/JournalEntryController.js";
 import {authenticationBarrier} from "../middleware/Authentication.js";
 let router = new Router();

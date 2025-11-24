@@ -1,4 +1,4 @@
-﻿import fAccountModel from "../models/FAccount.js"
+import fAccountModel from "../models/FAccount.js"
 import fAccountType from "../models/FAccountType.js";
 
 async function myFAccountsPage(req,res){

@@ -1,4 +1,4 @@
-﻿import journalEntryModel from "../models/JournalEntry.js"
+import journalEntryModel from "../models/JournalEntry.js"
 import fAccount from "../models/FAccount.js";
 import fAccountType from "../models/FAccountType.js"
 async function myJournalEntriesPage(req,res){

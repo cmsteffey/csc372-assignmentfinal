@@ -1,4 +1,4 @@
-﻿import {Router} from "express";
+import {Router} from "express";
 import accountController from "../controllers/UAccountController.js";
 import {authenticationBarrier} from "../middleware/Authentication.js";
 const router = Router();

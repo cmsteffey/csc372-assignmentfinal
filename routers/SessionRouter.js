@@ -1,4 +1,4 @@
-﻿import {Router} from 'express';
+import {Router} from 'express';
 import sessionController from "../controllers/SessionController.js"
 
 let router = Router();
