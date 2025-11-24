@@ -95,14 +95,11 @@ async function updateStockPage(req, res){
         return;
     }
     let stockAccount = await fAccount.getFAccountById(stockAccountId);
-    console.log(JSON.stringify(stockAccount));
     if(!stockAccount){
         res.status(400).send("Stock account referenced does not exist");
         return;
     }
     if(stockAccount.owner !== req.authenticatedUser.id){
-        console.log(stockAccount.owner);
-        console.log(req.authenticatedUser.id);
         res.status(400).send("Account owner is not logged in");
         return;
     }

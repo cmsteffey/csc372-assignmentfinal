@@ -29,7 +29,6 @@ async function addFAccount(userId, category, nickname){
 }
 async function addStockFAccount(userId, ticker, starting_shares){
     let createdFAccountId = (await pool.query("INSERT INTO financial_account (owner, category, nickname) VALUES ($1, $2, $3) RETURNING id", [userId, fAccountType.findIndex(x=>x.name === "Asset"), "STOCK: " + ticker])).rows[0].id;
-    console.log(createdFAccountId);
     (await pool.query("INSERT INTO stock_financial_account (financial_account, ticker, shares) VALUES ($1, $2, $3)", [createdFAccountId, ticker, starting_shares]));
     return createdFAccountId;
 }

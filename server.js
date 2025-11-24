@@ -6,7 +6,6 @@ import journalEntryRouter from "./routers/JournalEntryRouter.js";
 import multer from "multer"
 import {authenticationMiddleware} from "./middleware/Authentication.js";
 
-console.log(import.meta.dirname)
 let app = express();
 
 let multerObj = multer({});
