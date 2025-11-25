@@ -20,10 +20,12 @@
     <% } %>
     <form method="POST" enctype="multipart/form-data">
         <input type="hidden" name="rowCount" value="<%= rowCount %>">
-        <label>Entry name: <input style="width: 50ch" type="text" name="journal_entry_name"<% if(prefill && prefill.journal_entry_name) { %> value="<%=prefill.journal_entry_name%>"<% } %>></label>
+        <label>Entry name: <input style="width: 50ch" type="text" name="journal_entry_name"<% if(prefill && prefill.journal_entry_name) { %> value="<%=prefill.journal_entry_name%>"<% } %>></label><br>
+        <label>Entry date: <input type="date" name="journal_entry_date" value="<%if(prefill && prefill.journal_entry_date) { %><%=prefill.journal_entry_date%><% } else { %><%var datePieces = Intl.DateTimeFormat("en-US", {timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit"}).formatToParts(new Date())%><%=datePieces.find(x=>x.type === "year").value%>-<%=datePieces.find(x=>x.type === "month").value%>-<%=datePieces.find(x=>x.type === "day").value%><% } %>"></label>
         <table class="main-table">
             <thead>
                 <tr>
+                    <th>Description</th>
                     <th>Account</th>
                     <th>Debit</th>
                     <th>Credit</th>
@@ -32,6 +34,7 @@
             <tbody>
                 <% for(let i = 0; i < rowCount; ++i) { %>
                     <tr>
+                        <td><input type="text" name="description_<%= i %>"<%if(prefill && prefill["description_" + i]) { %> value="<%=prefill["description_" + i]%>"<% } %>></td>
                         <td><select name="account_id_<%= i %>">
                             <% for(let j = 0; j < accounts.length; ++j) { %>
                                 <% if(j === 0 || accounts[j].category !== accounts[j-1].category) {%>
@@ -43,8 +46,8 @@
                                 <% } %>
                             <% } %>
                         </select></td>
-                        <td>$<input type="number" name="debit_<%= i %>"<%if(prefill && prefill["debit_" + i]?.length) { %> value="<%=prefill["debit_" + i]%>"<% }%>></td>
-                        <td>$<input type="number" name="credit_<%= i %>"<%if(prefill && prefill["credit_" + i]?.length) { %> value="<%=prefill["credit_" + i]%>"<% }%>></td>
+                        <td>$<input type="text" name="debit_<%= i %>"<%if(prefill && prefill["debit_" + i]?.length) { %> value="<%=prefill["debit_" + i]%>"<% }%>></td>
+                        <td>$<input type="text" name="credit_<%= i %>"<%if(prefill && prefill["credit_" + i]?.length) { %> value="<%=prefill["credit_" + i]%>"<% }%>></td>
                     </tr>
                 <% } %>
             </tbody>

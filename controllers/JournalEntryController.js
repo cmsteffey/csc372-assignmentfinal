@@ -24,6 +24,11 @@ async function handleJournalEntryForm(req,res){
         });
         return;
     }
+    if(typeof req.body.journal_entry_date !== "string" || /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.exec(req.body.journal_entry_date).length !== 1){
+        res.status(400).send("Date missing or invalid");
+        return;
+    }
+
     let rowCount;
     if(typeof req.body.rowCount !== "string" || isNaN((rowCount = parseInt(req.body.rowCount))) || rowCount % 1 !== 0){
         res.status(400).send("rowCount is not a whole number or not supplied");
@@ -32,6 +37,10 @@ async function handleJournalEntryForm(req,res){
     let portions = Array(rowCount);
     for(let i = 0; i < rowCount;++i){
         portions[i] = {};
+        if(typeof req.body["description_" + i] !== "string"){
+            res.status(400).send("Bad or missing description in row " + (i + 1));
+            return;
+        }
         if(typeof req.body["account_id_" + i] !== "string" || isNaN((portions[i].account_id = parseInt(req.body["account_id_" + i])))){
             res.status(400).send("Bad or missing account_id in row " + (i + 1));
             return;
@@ -83,7 +92,7 @@ async function handleJournalEntryForm(req,res){
         });
         return;
     }
-    let journalEntryId = await journalEntryModel.createJournalEntry(req.body.journal_entry_name);
+    let journalEntryId = await journalEntryModel.createJournalEntry(req.body.journal_entry_name, req.body.journal_entry_date);
     await journalEntryModel.fillJournalEntry(journalEntryId, portions);
     res.redirect('/my-journal-entries');
 
