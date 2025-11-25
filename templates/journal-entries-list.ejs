@@ -36,7 +36,7 @@
                     <% var portion = portions[i] %>
                     <% if(i === 0 || portions[i].id !== portions[i - 1].id) { %>
                         <tr class="section-name">
-                            <td colspan="5" ><%= portion.name %></td>
+                            <td colspan="5" ><%= portion.name %><% if(portion.for_date) { %><br><%=portion.for_date%><% } %></td>
                         </tr>
                     <% } %>
                     <tr>
