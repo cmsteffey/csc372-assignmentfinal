@@ -1,12 +1,11 @@
 .header {
     position: fixed;
-    height: 7%;
+    height: var(--header-height);
     top: 0;
     left: 0;
     width: 100%;
     background-color: hsl(from var(--theme-header-background) h s calc(l * 0.9));
     font-size: 1.3em;
-
 }
 .header-item-container {
     position: absolute;

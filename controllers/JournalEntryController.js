@@ -36,7 +36,7 @@ async function handleJournalEntryForm(req,res){
             res.status(400).send("Bad or missing account_id in row " + (i + 1));
             return;
         }
-        if(typeof req.body["debit_" + i] !== "string"){
+        if(typeof req.body["debit_" + i] !== "string" || (req.body["debit_" + i].length !== 0 && isNaN(portions[i].debit = parseDollarValue(req.body["debit_" + i])))){
             res.render('add-journal-entry', {
                 error: "Error: Bad debit in row " + (i + 1),
                 prefill: req.body,
@@ -45,7 +45,7 @@ async function handleJournalEntryForm(req,res){
             });
             return;
         }
-        if(typeof req.body["credit_" + i] !== "string"){
+        if(typeof req.body["credit_" + i] !== "string" || (req.body["credit_" + i].length !== 0 && isNaN(portions[i].credit = parseDollarValue(req.body["credit_" + i])))){
             res.render('add-journal-entry', {
                 error: "Error: Bad credit in row " + (i + 1),
                 prefill: req.body,
@@ -54,16 +54,16 @@ async function handleJournalEntryForm(req,res){
             });
             return;
         }
-        if(isNaN(portions[i].debit = parseInt(req.body["debit_" + i])) === isNaN(portions[i].credit = parseInt(req.body["credit_" + i]))){
+        if((portions[i].credit === undefined) === (portions[i].debit === undefined)){
             res.render('add-journal-entry', {
-                error: "Error: Row " + (i + 1) + " has " + (isNaN(portions[i].debit) ? "no" : "two") + " amount values",
+                error: "Error: Row " + (i + 1) + " has " + ((portions[i].debit === undefined) ? "no" : "two") + " amount values",
                 prefill: req.body,
                 rowCount: ("body" in req && "rowCount" in req.body) ? (parseInt(req.body.rowCount) || 2) : 2,
                 accounts: await fAccount.getFAccountsForUser(req.authenticatedUser.id),
             });
             return;
         }
-        portions[i].amount = isNaN(portions[i].credit) ? portions[i].debit : -portions[i].credit;
+        portions[i].amount = portions[i].credit === undefined ? portions[i].debit : -portions[i].credit;
     }
     if(portions.reduce((acc, x) => acc + x.amount, 0) !== 0){
         res.render('add-journal-entry', {
@@ -146,5 +146,36 @@ async function updateStockPage(req, res){
         },
         accounts
     })
+}
+function parseDollarValue(string){
+    if(string.length === 0) return NaN;
+    let multiplier;
+    if(string[0] === '-'){
+        multiplier = -1;
+        string = string.substring(1);
+    } else {
+        multiplier = 1;
+    }
+    let periodIndex = string.indexOf('.');
+    if(periodIndex === -1){
+        multiplier *= 100;
+    } else if (periodIndex === string.length - 2){
+        multiplier *= 10;
+    } else if (periodIndex !== string.length - 3){
+        return NaN;
+    }
+    let charArray = Array.from(string);
+    let value = 0;
+    for(let i = 0; i < charArray.length; i++) {
+        if (i === periodIndex)
+            continue;
+        let charCode = charArray[i].charCodeAt(0)
+        if(charCode < 48 || charCode > 57){
+            return NaN;
+        }
+        value *= 10;
+        value += charArray[i].charCodeAt(0) - 48;
+    }
+    return value * multiplier;
 }
 export default {myJournalEntriesPage, addJournalEntryPage, handleJournalEntryForm, updateStockPage}

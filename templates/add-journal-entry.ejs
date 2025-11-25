@@ -43,8 +43,8 @@
                                 <% } %>
                             <% } %>
                         </select></td>
-                        <td><input type="number" name="debit_<%= i %>"<%if(prefill && prefill["debit_" + i]?.length) { %> value="<%=prefill["debit_" + i]%>"<% }%>></td>
-                        <td><input type="number" name="credit_<%= i %>"<%if(prefill && prefill["credit_" + i]?.length) { %> value="<%=prefill["credit_" + i]%>"<% }%>></td>
+                        <td>$<input type="number" name="debit_<%= i %>"<%if(prefill && prefill["debit_" + i]?.length) { %> value="<%=prefill["debit_" + i]%>"<% }%>></td>
+                        <td>$<input type="number" name="credit_<%= i %>"<%if(prefill && prefill["credit_" + i]?.length) { %> value="<%=prefill["credit_" + i]%>"<% }%>></td>
                     </tr>
                 <% } %>
             </tbody>

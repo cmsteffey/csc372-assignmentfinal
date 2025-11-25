@@ -42,7 +42,7 @@ async function getOwnerForAccounts(accounts){
     if(accounts.length === 0){
         return null;
     }
-    let rows = (await pool.query("SELECT owner FROM financial_account WHERE id IN (" + [...accounts.keys()].map(x=>"$" + (x + 1)) + ")", accounts)).rows;
+    let rows = (await pool.query("WITH query_accounts AS (SELECT UNNEST(ARRAY[" + Array.from(accounts.keys()).map(x=>"$" + (x + 1) + "::integer").join(',') + "]) as account_id) SELECT financial_account.owner FROM query_accounts LEFT JOIN financial_account on query_accounts.account_id = financial_account.id", accounts)).rows;
     return rows.every((x, i, a) => x.owner === a[0].owner) && rows.length === accounts.length ? rows[0].owner : null;
 }
 export default {getFAccountsForUser, addFAccount, getCategoryTotals, getOwnerForAccounts, getFAccountById, addStockFAccount};
