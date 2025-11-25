@@ -41,6 +41,7 @@ async function handleJournalEntryForm(req,res){
             res.status(400).send("Bad or missing description in row " + (i + 1));
             return;
         }
+        portions[i].description = req.body["description_" + i];
         if(typeof req.body["account_id_" + i] !== "string" || isNaN((portions[i].account_id = parseInt(req.body["account_id_" + i])))){
             res.status(400).send("Bad or missing account_id in row " + (i + 1));
             return;

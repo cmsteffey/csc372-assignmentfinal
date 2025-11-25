@@ -57,3 +57,6 @@ main {
     width: max-content;
     margin: 0 auto;
 }
+.negative {
+    color: #ff0000;
+}

@@ -19,6 +19,7 @@
     <table class="main-table">
         <thead>
             <tr>
+                <th style="width: 13ch">Account Type</th>
                 <th style="width: 30ch">Account</th>
                 <th style="width: 40ch">Description</th>
                 <th></th>
@@ -36,10 +37,11 @@
                     <% var portion = portions[i] %>
                     <% if(i === 0 || portions[i].id !== portions[i - 1].id) { %>
                         <tr class="section-name">
-                            <td colspan="5" ><%= portion.name %><% if(portion.for_date) { %><br><%=portion.for_date%><% } %></td>
+                            <td colspan="6" ><%= portion.name %><% if(portion.for_date) { %><br><%=portion.for_date%><% } %></td>
                         </tr>
                     <% } %>
                     <tr>
+                        <td><%= portion.faccount_category_string    %></td>
                         <td><%= portion.faccount_nickname %></td>
                         <td><%= portion.description %></td>
                         <td></td>
