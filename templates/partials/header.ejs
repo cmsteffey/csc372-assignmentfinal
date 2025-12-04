@@ -14,5 +14,25 @@
                 <a class="login-link" href="/register">Register</a>
             <% } %>
         </div>
+        <div class="header-popout-button-div">
+            <button popovertarget="header-popout">
+                ≡
+            </button>
+        </div>
+    </div>
+</div>
+<div id="header-popout" popover>
+    <a href="/">Home</a><br>
+    <!--a href="/about">About</a-->
+    <a href="/my-accounts">My Accounts</a><br>
+    <a href="/my-journal-entries">My Journal Entries</a><br>
+    <div>
+        <% if(authenticatedUser) {%>
+            <a class="account-link" href="/me"><%= authenticatedUser.username %></a>
+        <% } else { %>
+            <a class="login-link" href="/login">Log In</a>
+            <span class="light"> or </span>
+            <a class="login-link" href="/register">Register</a>
+        <% } %>
     </div>
 </div>

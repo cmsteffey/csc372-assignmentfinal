@@ -60,3 +60,6 @@ main {
 .negative {
     color: #ff0000;
 }
+td{
+    font-size: 1em;
+}

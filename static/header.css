@@ -28,3 +28,36 @@
 .light {
     color: var(--theme-header-light-text)
 }
+.header-popout-button-div {
+    display: none;
+}
+#header-popout {
+    display: none;
+}
+@media (width <= 80ch) {
+    .header-popout-button-div {
+        margin-left: auto;
+        display: block;
+    }
+    .header-popout-button-div > button {
+        appearance: none;
+        border: none;
+        background: none;
+        color: var(--theme-header-main-text);
+        font-size: 2em;
+    }
+
+    .header-item-container > :not(.header-popout-button-div):not(:first-child) {
+        display: none;
+    }
+
+    #header-popout:popover-open {
+        position: fixed;
+        top: calc(var(--header-height));
+        left: auto;
+        bottom: auto;
+        right: 0;
+        margin: 0;
+        display: block;
+    }
+}
