@@ -37,7 +37,7 @@ tbody > tr:not(.section-name) {
     border-top: 1px solid #AAA;
 }
 @media(width <= 80ch){
-    .main-table tr:not(.section-name) > :first-child {
+    .main-table tr:not(.section-name) > *:first-child {
         display: none !important;
     }
     main > .main-table {
