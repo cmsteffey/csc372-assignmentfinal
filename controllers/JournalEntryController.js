@@ -144,7 +144,7 @@ async function updateStockPage(req, res){
         return;
     }
     let priceResults = await priceFetch.json();
-
+    console.log(priceResults);
     res.render('add-journal-entry', {
         rowCount: 2,
         prefill: {
