@@ -27,8 +27,8 @@
     <table class="main-table">
         <thead>
             <tr>
-                <th style="width: 15ch">Account Type</th>
-                <th style="width: 30ch">Account Name</th>
+                <th style="width: 15ch" class="mobile-elidable">Account Type</th>
+                <th style="width: 25ch">Account Name</th>
                 <th style="width: 15ch">Balance</th>
                 <th></th>
                 <th class="ra"></th>
@@ -50,15 +50,15 @@
                         </tr>
                     <% } %>
                     <tr>
-                        <td><%= account.categoryString %></td>
+                        <td class="mobile-elidable"><%= account.categoryString %></td>
                         <td><%= account.ticker ? "STOCK: " + account.ticker : account.nickname %><%if (account.ticker) { %>, <%= account.shares %> share<%=account.shares !== 1 ? "s" : ""%> <a href="/update-stock-account/<%=account.id%>">(Update value)</a><%}%></td>
                         <td<% if(account.balance < 0) { %> class="negative"<% } %>><%=account.balance < 0 ? "(" : ""%>$<%= Math.floor(Math.abs(account.balance) / 100) %>.<%= (Math.abs(account.balance) % 100).toString().padStart(2, '0')%><%=account.balance < 0 ? ")" : ""%></td>
                         <td></td>
                     </tr>
                     <% if (i === accounts.length - 1 || accounts[i].category !== accounts[i + 1].category) { %>
                         <tr>
-                            <td><strong><%= account.categoryString %></strong></td>
-                            <td><strong>Category Total</strong></td>
+                            <td class="mobile-elidable"><strong><%= account.categoryString %></strong></td>
+                            <td><strong><span class="mobile-replacement"><%= account.categoryString %> </span>Category Total</strong></td>
                             <% var categoryTotal = categoryTotals[account.categoryString.toLowerCase()]%>
                             <td><strong<% if(categoryTotal < 0) { %> class="negative"<% } %>><%=categoryTotal < 0 ? "(" : ""%>$<%= Math.floor(Math.abs(categoryTotal) / 100) %>.<%= (Math.abs(categoryTotal) % 100).toString().padStart(2, '0') %><%=categoryTotal < 0 ? ")" : ""%></strong></td>
                         </tr>

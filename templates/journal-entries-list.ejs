@@ -19,10 +19,9 @@
     <table class="main-table">
         <thead>
             <tr>
-                <th style="width: 13ch">Account Type</th>
-                <th style="width: 30ch">Account</th>
-                <th style="width: 40ch">Description</th>
-                <th></th>
+                <th style="width: 13ch" class="mobile-elidable">Account Type</th>
+                <th style="width: 25ch">Account</th>
+                <th style="width: 100%; min-width: 20ch">Description</th>
                 <th style="width: 10ch">Debit</th>
                 <th style="width: 10ch">Credit</th>
             </tr>
@@ -41,10 +40,9 @@
                         </tr>
                     <% } %>
                     <tr>
-                        <td><%= portion.faccount_category_string    %></td>
+                        <td class="mobile-elidable"><%= portion.faccount_category_string %></td>
                         <td><%= portion.faccount_nickname %></td>
-                        <td><%= portion.description %></td>
-                        <td></td>
+                        <td><%= portion.description.substring(0, 17) %><% if(portion.description.length > 17) { %><span class="mobile-replacement">...</span><% } %><span class="mobile-elidable"><%=portion.description.substring(17)%></span></td>
                         <td><% if (portion.amount > 0) { %> $<%=Math.floor(portion.amount / 100)%>.<%=(portion.amount % 100).toString().padStart(2, '0')%> <% } %></td>
                         <td><% if (portion.amount < 0) { %> $<%=Math.floor(-portion.amount / 100)%>.<%=(-portion.amount % 100).toString().padStart(2, '0')%> <% } %></td>
                     </tr>

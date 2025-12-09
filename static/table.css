@@ -36,10 +36,15 @@ main > .main-table > thead > tr > th {
 tbody > tr:not(.section-name) {
     border-top: 1px solid #AAA;
 }
+.mobile-replacement {
+    display: none;
+}
 @media(width <= 80ch){
-    .main-table tr:not(.section-name) > th:first-of-type,
-    .main-table tr:not(.section-name) > td:first-of-type {
+    .mobile-elidable {
         display: none !important;
+    }
+    .mobile-replacement {
+        display: revert !important;
     }
     main > .main-table {
         margin: 0 0;
