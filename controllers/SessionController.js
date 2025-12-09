@@ -44,7 +44,6 @@ async function handleLoginForm(req, res){
     let key = await sessionModel.makeSession(partialAccount.id);
     res.header("Set-Cookie", "session=" + key);
     let redirValue = req.headers.cookie?.split(/;\s*/).map(x=>x.split('=')).filter(x=>x[0] === 'redir')?.[0]?.[1]
-    console.log(redirValue);
     if(redirValue){
         res.redirect(redirValue);
         return;
