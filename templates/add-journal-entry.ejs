@@ -36,17 +36,7 @@
                 <% for(let i = 0; i < rowCount; ++i) { %>
                     <tr>
                         <td><label><input type="text" name="description_<%= i %>"<%if(prefill && prefill["description_" + i]) { %> value="<%=prefill["description_" + i]%>"<% } %>></label></td>
-                        <td><label><select name="account_id_<%= i %>">
-                            <% for(let j = 0; j < accounts.length; ++j) { %>
-                                <% if(j === 0 || accounts[j].category !== accounts[j-1].category) {%>
-                                    <optgroup label="<%= accounts[j].categoryString %>">
-                                <% } %>
-                                <option value="<%= accounts[j].id %>"<%if(prefill && prefill["account_id_" + i] === accounts[j].id.toString()){%> selected<%}%>><%= accounts[j].nickname %></option>
-                                <% if(j === accounts.length - 1 || accounts[j].category !== accounts[j+1].category) { %>
-                                    </optgroup>
-                                <% } %>
-                            <% } %>
-                        </select></label></td>
+                        <td><label><%- include('partials/accountSelector', {name: "account_id_" + i, accounts: accounts, selected: prefill["account_id_" + i]}) %></label></td>
                         <td><label>$<input type="text" name="debit_<%= i %>"<%if(prefill && prefill["debit_" + i]?.length) { %> value="<%=prefill["debit_" + i]%>"<% }%>></label></td>
                         <td><label>$<input type="text" name="credit_<%= i %>"<%if(prefill && prefill["credit_" + i]?.length) { %> value="<%=prefill["credit_" + i]%>"<% }%>></label></td>
                     </tr>

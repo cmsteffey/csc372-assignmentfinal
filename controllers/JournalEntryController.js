@@ -1,17 +1,38 @@
 import journalEntryModel from "../models/JournalEntry.js"
-import fAccount from "../models/FAccount.js";
+import fAccountModel from "../models/FAccount.js";
 import fAccountType from "../models/FAccountType.js"
 async function myJournalEntriesPage(req,res){
     res.render('journal-entries-list', {
         pageTitle: "My Journal Entries",
-        portions: (await journalEntryModel.getTransactionPortionsForUser(req.authenticatedUser.id))
+        portions: (await journalEntryModel.getTransactionPortionsForUser(req.authenticatedUser.id)),
+        accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
+        prefill: {}
     })
+}
+async function journalEntriesForAccount(req, res){
+    let fAccountId;
+    if(typeof req.body.account_id !== "string" || isNaN(fAccountId = parseInt(req.body.account_id))){
+        await myJournalEntriesPage(req,res);
+        return;
+    }
+    let fAccount = await fAccountModel.getFAccountById(fAccountId);
+    if(fAccount.owner !== req.authenticatedUser.id){
+        await myJournalEntriesPage(req,res);
+        return;
+    }
+    let locals = {
+        pageTitle: "Journal Entries For '" + fAccount.nickname + "'",
+        portions: (await journalEntryModel.getTransactionPortionsForAccount(fAccount.id)),
+        accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
+        prefill: {account_id: req.body.account_id},
+    };
+    res.render("journal-entries-list", locals);
 }
 async function addJournalEntryPage(req,res){
     res.render('add-journal-entry', {
         prefill: req.body ?? {},
         rowCount: ("body" in req && "rowCount" in req.body) ? (parseInt(req.body.rowCount) || 2) + 1 : 2,
-        accounts: await fAccount.getFAccountsForUser(req.authenticatedUser.id),
+        accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
     })
 }
 async function handleJournalEntryForm(req,res){
@@ -20,7 +41,7 @@ async function handleJournalEntryForm(req,res){
             error: "Error: Entry name is required",
             prefill: req.body,
             rowCount: ("body" in req && "rowCount" in req.body) ? (parseInt(req.body.rowCount) || 2) : 2,
-            accounts: await fAccount.getFAccountsForUser(req.authenticatedUser.id),
+            accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
         });
         return;
     }
@@ -29,7 +50,7 @@ async function handleJournalEntryForm(req,res){
             error: "Error: For-Date is required",
             prefill: req.body,
             rowCount: ("body" in req && "rowCount" in req.body) ? (parseInt(req.body.rowCount) || 2) : 2,
-            accounts: await fAccount.getFAccountsForUser(req.authenticatedUser.id),
+            accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
         });
         return;
     }
@@ -48,7 +69,7 @@ async function handleJournalEntryForm(req,res){
             return;
         }
         portions[i].description = req.body["description_" + i];
-        if(typeof req.body["account_id_" + i] !== "string" || isNaN((portions[i].account_id = parseInt(req.body["account_id_" + i])))){
+        if(typeof req.body["account_id_" + i] !== "string" || isNaN((portions[i].account_id = parseInt(req.body["account_id_" + i]))) || portions[i].account_id === 0){
             res.status(400).send("Bad or missing account_id in row " + (i + 1));
             return;
         }
@@ -57,7 +78,7 @@ async function handleJournalEntryForm(req,res){
                 error: "Error: Bad debit in row " + (i + 1),
                 prefill: req.body,
                 rowCount: ("body" in req && "rowCount" in req.body) ? (parseInt(req.body.rowCount) || 2) : 2,
-                accounts: await fAccount.getFAccountsForUser(req.authenticatedUser.id),
+                accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
             });
             return;
         }
@@ -66,7 +87,7 @@ async function handleJournalEntryForm(req,res){
                 error: "Error: Bad credit in row " + (i + 1),
                 prefill: req.body,
                 rowCount: ("body" in req && "rowCount" in req.body) ? (parseInt(req.body.rowCount) || 2) : 2,
-                accounts: await fAccount.getFAccountsForUser(req.authenticatedUser.id),
+                accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
             });
             return;
         }
@@ -75,7 +96,7 @@ async function handleJournalEntryForm(req,res){
                 error: "Error: Row " + (i + 1) + " has " + ((portions[i].debit === undefined) ? "no" : "two") + " amount values",
                 prefill: req.body,
                 rowCount: ("body" in req && "rowCount" in req.body) ? (parseInt(req.body.rowCount) || 2) : 2,
-                accounts: await fAccount.getFAccountsForUser(req.authenticatedUser.id),
+                accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
             });
             return;
         }
@@ -86,16 +107,16 @@ async function handleJournalEntryForm(req,res){
             error: "Error: Debit and credit totals are not equal",
             prefill: req.body,
             rowCount: ("body" in req && "rowCount" in req.body) ? (parseInt(req.body.rowCount) || 2) : 2,
-            accounts: await fAccount.getFAccountsForUser(req.authenticatedUser.id),
+            accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
         });
         return;
     }
-    if(await fAccount.getOwnerForAccounts(portions.map(x=>x.account_id)) !== req.authenticatedUser.id){
+    if(await fAccountModel.getOwnerForAccounts(portions.map(x=>x.account_id)) !== req.authenticatedUser.id){
         res.render('add-journal-entry', {
             error: "Error: One or more accounts specified are invalid and/or deleted",
             prefill: req.body,
             rowCount: ("body" in req && "rowCount" in req.body) ? (parseInt(req.body.rowCount) || 2) : 2,
-            accounts: await fAccount.getFAccountsForUser(req.authenticatedUser.id),
+            accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
         });
         return;
     }
@@ -110,7 +131,7 @@ async function updateStockPage(req, res){
         res.status(400).send("Non-numeric stock account id is invalid");
         return;
     }
-    let stockAccount = await fAccount.getFAccountById(stockAccountId);
+    let stockAccount = await fAccountModel.getFAccountById(stockAccountId);
     if(!stockAccount){
         res.status(400).send("Stock account referenced does not exist");
         return;
@@ -119,7 +140,7 @@ async function updateStockPage(req, res){
         res.status(400).send("Account owner is not logged in");
         return;
     }
-    let accounts = await fAccount.getFAccountsForUser(req.authenticatedUser.id);
+    let accounts = await fAccountModel.getFAccountsForUser(req.authenticatedUser.id);
     let revenueCategory = fAccountType.findIndex(x=>x.name === "Revenue");
     let stockRevenueAccountId = accounts.find(x=>x.nickname === "Unrealized Stock Earnings" && x.category === revenueCategory)?.id;
     if(!stockRevenueAccountId){
@@ -193,4 +214,4 @@ function parseDollarValue(string){
     }
     return value * multiplier;
 }
-export default {myJournalEntriesPage, addJournalEntryPage, handleJournalEntryForm, updateStockPage}
+export default {myJournalEntriesPage, addJournalEntryPage, handleJournalEntryForm, updateStockPage, journalEntriesForAccount}

@@ -36,6 +36,9 @@ main > .main-table > thead > tr > th {
 tbody > tr:not(.section-name) {
     border-top: 1px solid #AAA;
 }
+tr.section-name.flagged > td{
+    background-color: #FFBBBB;
+}
 .mobile-replacement {
     display: none;
 }

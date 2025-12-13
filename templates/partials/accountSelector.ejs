@@ -1,0 +1,12 @@
+﻿<select name="<%=name%>">
+    <option value="0" hidden selected>Pick account...</option>
+    <% for(let j = 0; j < accounts.length; ++j) { %>
+        <% if(j === 0 || accounts[j].category !== accounts[j-1].category) {%>
+        <optgroup label="<%= accounts[j].categoryString %>">
+            <% } %>
+            <option value="<%= accounts[j].id %>"<%if(selected && selected === accounts[j].id.toString()){%> selected<%}%>><%= accounts[j].nickname %></option>
+            <% if(j === accounts.length - 1 || accounts[j].category !== accounts[j+1].category) { %>
+        </optgroup>
+        <% } %>
+    <% } %>
+</select>

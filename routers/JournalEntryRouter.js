@@ -7,4 +7,5 @@ router.post('/add-journal-entry', authenticationBarrier, journalEntryController.
 router.post('/add-journal-entry-submit', authenticationBarrier, journalEntryController.handleJournalEntryForm);
 router.get("/update-stock-account/:account_id", authenticationBarrier, journalEntryController.updateStockPage)
 router.get('/my-journal-entries', authenticationBarrier, journalEntryController.myJournalEntriesPage);
+router.post("/journal-entries-account-search", authenticationBarrier, journalEntryController.journalEntriesForAccount)
 export default router;

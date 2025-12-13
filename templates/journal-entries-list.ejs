@@ -16,6 +16,9 @@
         <h1><%= pageTitle ?? "Journal Entries" %></h1>
     </div>
     <a href="/add-journal-entry">+ Add a new entry</a><br><br>
+    <form action="/journal-entries-account-search" method="POST" enctype="multipart/form-data">Show entries for <label>account:
+            <%-include('partials/accountSelector', {name: "account_id", accounts: accounts, selected: prefill["account_id"]})%>
+        </label><button>Search</button></form>
     <table class="main-table">
         <thead>
             <tr>
@@ -35,8 +38,8 @@
                 <% for(let i = 0; i < portions.length; ++i) { %>
                     <% var portion = portions[i] %>
                     <% if(i === 0 || portions[i].id !== portions[i - 1].id) { %>
-                        <tr class="section-name">
-                            <td colspan="6" ><%= portion.name %><% if(portion.for_date) { %><br><%=portion.for_date%><% } %></td>
+                        <tr class="section-name<% if(portion.flagged) { %> flagged<% } %>">
+                            <td colspan="6"><%= portion.name %><% if(portion.for_date) { %><br><%=portion.for_date%><% } %></td>
                         </tr>
                     <% } %>
                     <tr>
