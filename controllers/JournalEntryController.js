@@ -24,8 +24,13 @@ async function handleJournalEntryForm(req,res){
         });
         return;
     }
-    if(typeof req.body.journal_entry_date !== "string" || /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.exec(req.body.journal_entry_date).length !== 1){
-        res.status(400).send("Date missing or invalid");
+    if(typeof req.body.journal_entry_date !== "string" || /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.exec(req.body.journal_entry_date)?.length !== 1){
+        res.render('add-journal-entry', {
+            error: "Error: For-Date is required",
+            prefill: req.body,
+            rowCount: ("body" in req && "rowCount" in req.body) ? (parseInt(req.body.rowCount) || 2) : 2,
+            accounts: await fAccount.getFAccountsForUser(req.authenticatedUser.id),
+        });
         return;
     }
 
