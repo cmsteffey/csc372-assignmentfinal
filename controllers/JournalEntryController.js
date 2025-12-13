@@ -129,7 +129,7 @@ async function updateStockPage(req, res){
     let now = new Date();
     let yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1)
     let dayBeforeYesterday = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate() - 1)
-    let url = "https://api.massive.com/v2/aggs/ticker/" + stockAccount.ticker + "/range/1/day/" + dayBeforeYesterday.getFullYear() + "-" + (dayBeforeYesterday.getMonth() + 1) + "-" + dayBeforeYesterday.getDate().toString().padStart(2, '0') + "/" + yesterday.getFullYear() + "-" + (yesterday.getMonth() + 1) + "-" + yesterday.getDate().toString().padStart(2, '0') + "?apiKey=" + process.env.MASSIVE_KEY
+    let url = "https://api.massive.com/v2/aggs/ticker/" + stockAccount.ticker + "/range/1/day/" + dayBeforeYesterday.getFullYear() + "-" + (dayBeforeYesterday.getMonth() + 1).toString().padStart(2, '0') + "-" + dayBeforeYesterday.getDate().toString().padStart(2, '0') + "/" + yesterday.getFullYear() + "-" + (yesterday.getMonth() + 1).toString().padStart(2, '0') + "-" + yesterday.getDate().toString().padStart(2, '0') + "?apiKey=" + process.env.MASSIVE_KEY
     let priceFetch = await fetch(url);
     if(priceFetch.status === 429){
         res.render('add-journal-entry', {
