@@ -35,6 +35,7 @@
                     <td class="empty-text" colspan="5"><p>No entries found.</p></td>
                 </tr>
             <% } else { %>
+                <% var totalDebit, totalCredit, total; totalDebit = 0; totalCredit = 0; total = 0; %>
                 <% for(let i = 0; i < portions.length; ++i) { %>
                     <% var portion = portions[i] %>
                     <% if(i === 0 || portions[i].id !== portions[i - 1].id) { %>
@@ -46,11 +47,28 @@
                         <td class="mobile-elidable"><%= portion.faccount_category_string %></td>
                         <td><%= portion.faccount_nickname %></td>
                         <td><%= portion.description.substring(0, 17) %><% if(portion.description.length > 17) { %><span class="mobile-replacement">...</span><% } %><span class="mobile-elidable"><%=portion.description.substring(17)%></span></td>
-                        <td><% if (portion.amount > 0) { %> $<%=Math.floor(portion.amount / 100)%>.<%=(portion.amount % 100).toString().padStart(2, '0')%> <% } %></td>
-                        <td><% if (portion.amount < 0) { %> $<%=Math.floor(-portion.amount / 100)%>.<%=(-portion.amount % 100).toString().padStart(2, '0')%> <% } %></td>
+                        <td><% if (portion.amount > 0) { totalDebit += portion.amount; total += portion.amount; %> $<%=Math.floor(portion.amount / 100)%>.<%=(portion.amount % 100).toString().padStart(2, '0')%> <% } %></td>
+                        <td><% if (portion.amount < 0) { totalCredit -= portion.amount; total += portion.amount; %> $<%=Math.floor(-portion.amount / 100)%>.<%=(-portion.amount % 100).toString().padStart(2, '0')%> <% } %></td>
                     </tr>
                 <% } %>
+                <%if (typeof showTotals === 'boolean' && showTotals) { %>
+                <tr class="section-name">
+                    <td colspan="3"><strong>Total Debits: </strong></td>
+                    <td><strong>$<%=Math.floor(totalDebit / 100)%>.<%=(totalDebit % 100).toString().padStart(2, '0')%></strong></td>
+                    <td></td>
+                </tr>
+                <tr class="section-name">
+                    <td colspan="4"><strong>Total Credits: </strong></td>
+                    <td><strong>$<%=Math.floor(totalCredit / 100)%>.<%=(totalCredit % 100).toString().padStart(2, '0')%></strong></td>
+                </tr>
+                <tr class="section-name">
+                    <td colspan="<%= total < 0 ? '4' : '3' %>"><strong>Total Balance: </strong></td>
+                    <td><strong>$<%=Math.floor(total / 100)%>.<%=(total % 100).toString().padStart(2, '0')%></strong></td>
+                    <td></td>
+                </tr>
+                <% } %>
             <% } %>
+
         </tbody>
     </table>
 </main>

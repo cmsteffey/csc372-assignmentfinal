@@ -20,13 +20,14 @@ async function journalEntriesForAccount(req, res){
         await myJournalEntriesPage(req,res);
         return;
     }
-    let locals = {
+
+    res.render("journal-entries-list", {
         pageTitle: "Journal Entries For '" + fAccount.nickname + "'",
         portions: (await journalEntryModel.getTransactionPortionsForAccount(fAccount.id)),
         accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
         prefill: {account_id: req.body.account_id},
-    };
-    res.render("journal-entries-list", locals);
+        showTotals: true
+    });
 }
 async function addJournalEntryPage(req,res){
     res.render('add-journal-entry', {
