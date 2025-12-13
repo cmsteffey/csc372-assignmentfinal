@@ -34,6 +34,7 @@ async function handleJournalEntryForm(req,res){
         return;
     }
 
+
     let rowCount;
     if(typeof req.body.rowCount !== "string" || isNaN((rowCount = parseInt(req.body.rowCount))) || rowCount % 1 !== 0){
         res.status(400).send("rowCount is not a whole number or not supplied");
@@ -98,7 +99,7 @@ async function handleJournalEntryForm(req,res){
         });
         return;
     }
-    let journalEntryId = await journalEntryModel.createJournalEntry(req.body.journal_entry_name, req.body.journal_entry_date);
+    let journalEntryId = await journalEntryModel.createJournalEntry(req.body.journal_entry_name, req.body.journal_entry_date, typeof req.body.flagged === "string");
     await journalEntryModel.fillJournalEntry(journalEntryId, portions);
     res.redirect('/my-journal-entries');
 
