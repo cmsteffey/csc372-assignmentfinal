@@ -70,27 +70,44 @@ async function handleJournalEntryForm(req,res){
             return;
         }
         portions[i].description = req.body["description_" + i];
-        if(typeof req.body["account_id_" + i] !== "string" || isNaN((portions[i].account_id = parseInt(req.body["account_id_" + i]))) || portions[i].account_id === 0){
+        if(typeof req.body["account_id_" + i] !== "string" || isNaN((portions[i].account_id = parseInt(req.body["account_id_" + i])))){
             res.status(400).send("Bad or missing account_id in row " + (i + 1));
             return;
         }
-        if(typeof req.body["debit_" + i] !== "string" || (req.body["debit_" + i].length !== 0 && isNaN(portions[i].debit = parseDollarValue(req.body["debit_" + i])))){
-            res.render('add-journal-entry', {
-                error: "Error: Bad debit in row " + (i + 1),
-                prefill: req.body,
-                rowCount: ("body" in req && "rowCount" in req.body) ? (parseInt(req.body.rowCount) || 2) : 2,
-                accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
-            });
-            return;
-        }
-        if(typeof req.body["credit_" + i] !== "string" || (req.body["credit_" + i].length !== 0 && isNaN(portions[i].credit = parseDollarValue(req.body["credit_" + i])))){
-            res.render('add-journal-entry', {
-                error: "Error: Bad credit in row " + (i + 1),
-                prefill: req.body,
-                rowCount: ("body" in req && "rowCount" in req.body) ? (parseInt(req.body.rowCount) || 2) : 2,
-                accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
-            });
-            return;
+        if(typeof req.body["amount_" + i] === "string"){
+            if(typeof req.body["d/c_" + i] !== "string" || (req.body["d/c_" + i] !== 'd' && req.body["d/c_" + i] !== 'c')){
+                res.status(400).send("Missing debit/credit specifier in row " + (i + 1));
+                return;
+            }
+            let amount = parseInt(req.body["amount_" + i]);
+            if(isNaN(amount)){
+                res.render('add-journal-entry', {
+                    error: "Error: Bad amount in row " + (i + 1),
+                    prefill: req.body,
+                    rowCount: ("body" in req && "rowCount" in req.body) ? (parseInt(req.body.rowCount) || 2) : 2,
+                    accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
+                });
+            }
+            portions[i][req.body["d/c_" + i] === 'd' ? "debit" : "credit"] = amount;
+        } else {
+            if (typeof req.body["debit_" + i] !== "string" || (req.body["debit_" + i].length !== 0 && isNaN(portions[i].debit = parseDollarValue(req.body["debit_" + i])))) {
+                res.render('add-journal-entry', {
+                    error: "Error: Bad debit in row " + (i + 1),
+                    prefill: req.body,
+                    rowCount: ("body" in req && "rowCount" in req.body) ? (parseInt(req.body.rowCount) || 2) : 2,
+                    accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
+                });
+                return;
+            }
+            if (typeof req.body["credit_" + i] !== "string" || (req.body["credit_" + i].length !== 0 && isNaN(portions[i].credit = parseDollarValue(req.body["credit_" + i])))) {
+                res.render('add-journal-entry', {
+                    error: "Error: Bad credit in row " + (i + 1),
+                    prefill: req.body,
+                    rowCount: ("body" in req && "rowCount" in req.body) ? (parseInt(req.body.rowCount) || 2) : 2,
+                    accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
+                });
+                return;
+            }
         }
         if((portions[i].credit === undefined) === (portions[i].debit === undefined)){
             res.render('add-journal-entry', {

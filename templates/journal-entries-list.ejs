@@ -4,10 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Journal Entries</title>
-    <%- include('partials/commonhead') %>
     <%- include('partials/table-basedcss') %>
+    <%- include('partials/commonhead') %>
+    <style>
+        :root {
+            --w-1: 13ch;
+            --w-2: 25ch;
+            --w-4: 10ch;
+            --w-5: 10ch;
+        }
+    </style>
 </head>
 <body>
 <%- include('partials/header') %>
@@ -20,52 +27,87 @@
             <%-include('partials/accountSelector', {name: "account_id", accounts: accounts, selected: prefill["account_id"]})%>
         </label><button>Search</button></form>
     <table class="main-table">
+        <colgroup class="mobile-elidable">
+            <col style="width: var(--w-1)">
+            <col style="width: var(--w-2)">
+            <col style="width: calc(100% - var(--w-1) - var(--w-2) - var(--w-4) - var(--w-5))">
+            <col style="width: var(--w-4)">
+            <col style="width: var(--w-5)">
+        </colgroup>
+        <colgroup class="mobile-replacement">
+            <col style="width: var(--w-2)">
+            <col style="width: calc(100% - var(--w-2) - var(--w-4) - var(--w-5))">
+            <col style="width: var(--w-4)">
+            <col style="width: var(--w-5)">
+        </colgroup>
+        <colgroup style="display: none" class="print-visible">
+            <col style="width: var(--w-2)">
+            <col style="width: calc(100% - var(--w-2) - var(--w-4) - var(--w-5))">
+            <col style="width: var(--w-4)">
+            <col style="width: var(--w-5)">
+        </colgroup>
         <thead>
             <tr>
-                <th style="width: 13ch" class="mobile-elidable">Account Type</th>
-                <th style="width: 25ch">Account</th>
-                <th style="width: 100%; min-width: 20ch">Description</th>
-                <th style="width: 10ch">Debit</th>
-                <th style="width: 10ch">Credit</th>
+                <th class="mobile-elidable">Account Type</th>
+                <th>Account</th>
+                <th>Description</th>
+                <th>Debit</th>
+                <th>Credit</th>
             </tr>
         </thead>
         <tbody>
+            <tr class="print-visible">
+                <td><%- new Array(13).fill("&nbsp;").join("") %></td>
+                <td><%- new Array(30).fill("&nbsp;").join("") %></td>
+                <td><%- new Array(40).fill("&nbsp;").join("") %></td>
+                <td><%- new Array(10).fill("&nbsp;").join("") %></td>
+                <td><%- new Array(10).fill("&nbsp;").join("") %></td>
+            </tr>
             <% if (portions.length === 0) { %>
-                <tr>
+                <tr class="mobile-elidable">
                     <td class="empty-text" colspan="5"><p>No entries found.</p></td>
+                </tr>
+                <tr class="mobile-replacement">
+                    <td class="empty-text" colspan="4"><p>No entries found.</p></td>
                 </tr>
             <% } else { %>
                 <% var totalDebit, totalCredit, total; totalDebit = 0; totalCredit = 0; total = 0; %>
                 <% for(let i = 0; i < portions.length; ++i) { %>
                     <% var portion = portions[i] %>
                     <% if(i === 0 || portions[i].id !== portions[i - 1].id) { %>
-                        <tr class="section-name<% if(portion.flagged) { %> flagged<% } %>">
-                            <td colspan="6"><%= portion.name %><% if(portion.for_date) { %><br><%=portion.for_date%><% } %></td>
+                        <tr class="mobile-elidable section-name<% if(portion.flagged) { %> flagged<% } %>">
+                            <td colspan="5"><%= portion.name %><% if(portion.for_date) { %><br><%=portion.for_date%><% } %></td>
+                        </tr>
+                        <tr class="mobile-replacement section-name<% if(portion.flagged) { %> flagged<% } %>">
+                            <td colspan="4"><%= portion.name %><% if(portion.for_date) { %><br><%=portion.for_date%><% } %></td>
                         </tr>
                     <% } %>
                     <tr>
                         <td class="mobile-elidable"><%= portion.faccount_category_string %></td>
                         <td><%= portion.faccount_nickname %></td>
-                        <td><%= portion.description.substring(0, 17) %><% if(portion.description.length > 17) { %><span class="mobile-replacement">...</span><% } %><span class="mobile-elidable"><%=portion.description.substring(17)%></span></td>
+                        <td><%= portion.description.substring(0, 17) %><% if(portion.description.length > 17) { %><span class="mobile-replacement">...</span><span class="mobile-elidable"><%=portion.description.substring(17)%></span><% } %></td>
                         <td><% if (portion.amount > 0) { totalDebit += portion.amount; total += portion.amount; %> $<%=Math.floor(portion.amount / 100)%>.<%=(portion.amount % 100).toString().padStart(2, '0')%> <% } %></td>
                         <td><% if (portion.amount < 0) { totalCredit -= portion.amount; total += portion.amount; %> $<%=Math.floor(-portion.amount / 100)%>.<%=(-portion.amount % 100).toString().padStart(2, '0')%> <% } %></td>
                     </tr>
                 <% } %>
                 <%if (typeof showTotals === 'boolean' && showTotals) { %>
-                <tr class="section-name">
-                    <td colspan="3"><strong>Total Debits: </strong></td>
-                    <td><strong>$<%=Math.floor(totalDebit / 100)%>.<%=(totalDebit % 100).toString().padStart(2, '0')%></strong></td>
-                    <td></td>
-                </tr>
-                <tr class="section-name">
-                    <td colspan="4"><strong>Total Credits: </strong></td>
-                    <td><strong>$<%=Math.floor(totalCredit / 100)%>.<%=(totalCredit % 100).toString().padStart(2, '0')%></strong></td>
-                </tr>
-                <tr class="section-name">
-                    <td colspan="<%= total < 0 ? '4' : '3' %>"><strong>Total Balance: </strong></td>
-                    <td><strong>$<%=Math.floor(total / 100)%>.<%=(total % 100).toString().padStart(2, '0')%></strong></td>
-                    <td></td>
-                </tr>
+                    <tr class="section-name">
+                        <td colspan="3" class="mobile-elidable"><strong>Total Debits: </strong></td>
+                        <td colspan="2" class="mobile-replacement"><strong>Total Credits: </strong></td>
+                        <td><strong>$<%=Math.floor(totalDebit / 100)%>.<%=(totalDebit % 100).toString().padStart(2, '0')%></strong></td>
+                        <td></td>
+                    </tr>
+                    <tr class="section-name">
+                        <td colspan="4" class="mobile-elidable"><strong>Total Credits: </strong></td>
+                        <td colspan="3" class="mobile-replacement"><strong>Total Credits: </strong></td>
+                        <td><strong>$<%=Math.floor(totalCredit / 100)%>.<%=(totalCredit % 100).toString().padStart(2, '0')%></strong></td>
+                    </tr>
+                    <tr class="section-name">
+                        <td class="mobile-elidable" colspan="<%= total < 0 ? '4' : '3' %>"><strong>Total Balance: </strong></td>
+                        <td class="mobile-replacement" colspan="<%= total < 0 ? '3' : '2' %>"><strong>Total Balance: </strong></td>
+                        <td><strong>$<%=Math.floor(total / 100)%>.<%=(total % 100).toString().padStart(2, '0')%></strong></td>
+                        <td></td>
+                    </tr>
                 <% } %>
             <% } %>
 

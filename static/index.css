@@ -41,7 +41,20 @@ main {
     margin: 0;
     margin-left: auto;
 }
-
+.main-table tr:not(.section-name):has(td:hover) {
+    animation: background-blink 1.5s infinite linear;
+}
+@keyframes background-blink{
+    from {
+        background-color: hsl(from #ffffff h s calc(l * 0.85));
+    }
+    50% {
+        background-color: hsl(from #ffffff h s calc(l * 0.92));
+    }
+    to {
+         background-color: hsl(from #ffffff h s calc(l * 0.85));
+    }
+}
 /*noinspection CssInvalidFunction*/
 .top-popover {
     margin: 0;
@@ -62,4 +75,19 @@ main {
 }
 td{
     font-size: 1em;
+}
+.mobile-replacement {
+     display: none;
+ }
+@media(width <= 80ch){
+    .mobile-elidable {
+        display: none !important;
+    }
+    .mobile-replacement {
+        display: revert !important;
+    }
+    main > .main-table {
+        margin: 0 0;
+        width: 100%;
+    }
 }

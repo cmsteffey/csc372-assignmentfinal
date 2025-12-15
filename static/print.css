@@ -1,8 +1,17 @@
 * {
     display: none;
 }
-.main-table, html, body, main{
+
+main {
+    top: 0 !important;
+    height: 100% !important;
+    overflow: revert !important;
+}
+main > .main-table, html, body, main{
+    width: 100% !important;
+    margin: 0 !important;
     display: block !important;
+    padding: 0 !important;
 }
 .main-table thead {
     display: table-header-group;
@@ -13,13 +22,15 @@
 .main-table tfoot {
     display: table-footer-group;
 }
-.main-table td, .main-table th {
+.main-table td:not(.mobile-replacement), .main-table th:not(.mobile-replacement) {
     display: table-cell !important;
+    border-left: 1px #AAAAAA;
+    border-right: 1px #AAAAAA;
 }
-.main-table td *, .main-table th * {
+.main-table td *:not(.mobile-replacement), .main-table th *:not(.mobile-replacement) {
     display: revert !important;
 }
-.main-table tr {
+.main-table tr:not(.mobile-replacement) {
     display: table-row !important;
 }
 .main-table {

@@ -39,18 +39,3 @@ tbody > tr:not(.section-name) {
 tr.section-name.flagged > td{
     background-color: #FFBBBB;
 }
-.mobile-replacement {
-    display: none;
-}
-@media(width <= 80ch){
-    .mobile-elidable {
-        display: none !important;
-    }
-    .mobile-replacement {
-        display: revert !important;
-    }
-    main > .main-table {
-        margin: 0 0;
-        width: 100%;
-    }
-}
