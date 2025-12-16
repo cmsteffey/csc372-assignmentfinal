@@ -27,25 +27,29 @@
     <table class="main-table">
         <thead>
             <tr>
-                <th style="width: 15ch" class="mobile-elidable">Account Type</th>
-                <th style="width: 45ch">Account Name</th>
+                <th style="width: 13ch;" class="mobile-elidable">Account Type</th>
+                <th style="min-width: 45ch">Account Name</th>
                 <th style="width: 15ch">Balance</th>
-                <th></th>
-                <th class="ra"></th>
             </tr>
         </thead>
         <tbody>
             <% if (accounts.length === 0) { %>
                 <tr>
-                    <td class="empty-text" colspan="5"><p>No accounts found.</p></td>
+                    <td class="empty-text mobile-elidable" colspan="5"><p>No accounts found.</p></td>
+                    <td class="empty-text mobile-replacement" colspan="4"><p>No accounts found.</p></td>
                 </tr>
             <% } else { %>
                 <% for(let i = 0; i < accounts.length; ++i){ %>
                     <% account = accounts[i] %>
                     <% if(i === 0 || accounts[i].category !== accounts[i - 1].category) { %>
-                        <tr class="section-name">
-                            <td colspan="5">
-                               <%= account.categoryString%> Accounts
+                        <tr class="section-name mobile-elidable">
+                            <td colspan="3">
+                                <%= account.categoryString%> Accounts
+                            </td>
+                        </tr>
+                        <tr class="section-name mobile-replacement">
+                            <td colspan="2">
+                                <%= account.categoryString%> Accounts
                             </td>
                         </tr>
                     <% } %>
@@ -53,7 +57,6 @@
                         <td class="mobile-elidable"><%= account.categoryString %></td>
                         <td><%= account.ticker ? "STOCK: " + account.ticker : account.nickname %><%if (account.ticker) { %>, <%= account.shares %> share<%=account.shares !== 1 ? "s" : ""%> <a href="/update-stock-account/<%=account.id%>">(Update value)</a><%}%></td>
                         <td<% if(account.balance < 0) { %> class="negative"<% } %>><%=account.balance < 0 ? "(" : ""%>$<%= Math.floor(Math.abs(account.balance) / 100) %>.<%= (Math.abs(account.balance) % 100).toString().padStart(2, '0')%><%=account.balance < 0 ? ")" : ""%></td>
-                        <td></td>
                     </tr>
                     <% if (i === accounts.length - 1 || accounts[i].category !== accounts[i + 1].category) { %>
                         <tr>

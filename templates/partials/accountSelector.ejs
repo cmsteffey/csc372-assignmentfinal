@@ -1,5 +1,5 @@
 ﻿<select name="<%=name%>">
-    <option value="" hidden selected>Pick account...</option>
+    <option value="" <% if(typeof placeholderHidden !== 'boolean' || placeholderHidden) { %>hidden disabled <% } %>selected><%=typeof placeholder === 'string' ? placeholder : "Pick account..."%></option>
     <% for(let j = 0; j < accounts.length; ++j) { %>
         <% if(j === 0 || accounts[j].category !== accounts[j-1].category) {%>
         <optgroup label="<%= accounts[j].categoryString %>">

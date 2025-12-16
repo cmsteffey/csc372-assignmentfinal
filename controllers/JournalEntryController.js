@@ -9,23 +9,24 @@ async function myJournalEntriesPage(req,res){
         prefill: {}
     })
 }
-async function journalEntriesForAccount(req, res){
-    let fAccountId;
-    if(typeof req.body.account_id !== "string" || isNaN(fAccountId = parseInt(req.body.account_id))){
+async function journalEntrySearch(req, res){
+    let fAccountId = parseInt(req.body.account_id)
+    let fAccount = isNaN(fAccountId) ? null : await fAccountModel.getFAccountById(fAccountId);
+    if(fAccount !== null && fAccount.owner !== req.authenticatedUser.id){
         await myJournalEntriesPage(req,res);
         return;
     }
-    let fAccount = await fAccountModel.getFAccountById(fAccountId);
-    if(fAccount.owner !== req.authenticatedUser.id){
-        await myJournalEntriesPage(req,res);
-        return;
-    }
-
+    let start_date = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.exec(req.body.start_date)?.[0] ?? null;
+    let end_date = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.exec(req.body.end_date)?.[0] ?? null;
+    let portions = await journalEntryModel.searchTransactionPortions(req.authenticatedUser.id, fAccount?.id ?? null, start_date, end_date);
     res.render("journal-entries-list", {
-        pageTitle: "Journal Entries For '" + fAccount.nickname + "'",
-        portions: (await journalEntryModel.getTransactionPortionsForAccount(fAccount.id)),
+        pageTitle: "Journal Entries" +
+            (fAccount === null ? "" : " For '" + fAccount.nickname + "'") +
+            (start_date === null ? "" : " After " + start_date) +
+            (end_date === null ? "" : " Up To " + end_date),
+        portions,
         accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
-        prefill: {account_id: req.body.account_id},
+        prefill: req.body ?? {},
         showTotals: true
     });
 }
@@ -232,4 +233,4 @@ function parseDollarValue(string){
     }
     return value * multiplier;
 }
-export default {myJournalEntriesPage, addJournalEntryPage, handleJournalEntryForm, updateStockPage, journalEntriesForAccount}
+export default {myJournalEntriesPage, addJournalEntryPage, handleJournalEntryForm, updateStockPage, journalEntrySearch}

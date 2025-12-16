@@ -23,9 +23,18 @@
         <h1><%= pageTitle ?? "Journal Entries" %></h1>
     </div>
     <a href="/add-journal-entry">+ Add a new entry</a><br><br>
-    <form action="/journal-entries-account-search" method="POST" enctype="multipart/form-data">Show entries for <label>account:
-            <%-include('partials/accountSelector', {name: "account_id", accounts: accounts, selected: prefill["account_id"]})%>
-        </label><button>Search</button></form>
+    <button popovertarget="entry-search">Search...</button>
+    <div popover id="entry-search">
+        <form action="/journal-entries-search" method="POST" enctype="multipart/form-data">
+            Show entries for <label>account:
+            <%-include('partials/accountSelector', {name: "account_id", placeholder: "<All Accounts>", placeholderHidden: false, accounts: accounts, selected: prefill["account_id"]})%>
+            </label><br>
+            <label>From: <input type="date" name="start_date" <% if(prefill !== undefined && prefill.start_date) { %> value="<%=prefill.start_date%>"<% } %>><br></label>
+            <label>Up to: <input type="date" name="end_date" <% if(prefill !== undefined && prefill.start_date) { %> value="<%=prefill.start_date%>"<% } %>><br></label>
+            <button>Search</button>
+
+        </form>
+    </div>
     <table class="main-table">
         <colgroup class="mobile-elidable">
             <col style="width: var(--w-1)">
@@ -35,12 +44,6 @@
             <col style="width: var(--w-5)">
         </colgroup>
         <colgroup class="mobile-replacement">
-            <col style="width: var(--w-2)">
-            <col style="width: calc(100% - var(--w-2) - var(--w-4) - var(--w-5))">
-            <col style="width: var(--w-4)">
-            <col style="width: var(--w-5)">
-        </colgroup>
-        <colgroup style="display: none" class="print-visible">
             <col style="width: var(--w-2)">
             <col style="width: calc(100% - var(--w-2) - var(--w-4) - var(--w-5))">
             <col style="width: var(--w-4)">
@@ -105,8 +108,7 @@
                     <tr class="section-name">
                         <td class="mobile-elidable" colspan="<%= total < 0 ? '4' : '3' %>"><strong>Total Balance: </strong></td>
                         <td class="mobile-replacement" colspan="<%= total < 0 ? '3' : '2' %>"><strong>Total Balance: </strong></td>
-                        <td><strong>$<%=Math.floor(total / 100)%>.<%=(total % 100).toString().padStart(2, '0')%></strong></td>
-                        <td></td>
+                        <td colspan="<%= total < 0 ? '1' : '2' %>"><strong>$<%=Math.floor(Math.abs(total) / 100)%>.<%=(Math.abs(total) % 100).toString().padStart(2, '0')%></strong></td>
                     </tr>
                 <% } %>
             <% } %>
