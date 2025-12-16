@@ -80,7 +80,7 @@ async function handleJournalEntryForm(req,res){
                 res.status(400).send("Missing debit/credit specifier in row " + (i + 1));
                 return;
             }
-            let amount = parseInt(req.body["amount_" + i]);
+            let amount = parseDollarValue(req.body["amount_" + i]);
             if(isNaN(amount)){
                 res.render('add-journal-entry', {
                     error: "Error: Bad amount in row " + (i + 1),
