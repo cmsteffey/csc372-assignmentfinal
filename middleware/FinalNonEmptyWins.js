@@ -4,7 +4,7 @@
             if(req.body[prop].length === 0){
                 req.body[prop] = undefined;
             } else {
-                req.body[prop] = req.body[prop].find(x=>x.length !== 0);
+                req.body[prop] = req.body[prop].findLast(x=>x.length !== 0);
             }
         }
     }

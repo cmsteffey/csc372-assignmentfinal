@@ -66,16 +66,16 @@ async function handleJournalEntryForm(req,res){
     let portions = Array(rowCount);
     for(let i = 0; i < rowCount;++i){
         portions[i] = {};
-        if(typeof req.body["description_" + i] !== "string"){
+        if(typeof req.body[(req.mobile ? "m_" : "") + "description_" + i] !== "string"){
             res.status(400).send("Bad or missing description in row " + (i + 1));
             return;
         }
-        portions[i].description = req.body["description_" + i];
-        if(typeof req.body["account_id_" + i] !== "string" || isNaN((portions[i].account_id = parseInt(req.body["account_id_" + i])))){
+        portions[i].description = req.body[(req.mobile ? "m_" : "") + "description_" + i];
+        if(typeof req.body[(req.mobile ? "m_" : "") + "account_id_" + i] !== "string" || isNaN((portions[i].account_id = parseInt(req.body[(req.mobile ? "m_" : "") + "account_id_" + i])))){
             res.status(400).send("Bad or missing account_id in row " + (i + 1));
             return;
         }
-        if(typeof req.body["amount_" + i] === "string"){
+        if(req.mobile){
             if(typeof req.body["d/c_" + i] !== "string" || (req.body["d/c_" + i] !== 'd' && req.body["d/c_" + i] !== 'c')){
                 res.status(400).send("Missing debit/credit specifier in row " + (i + 1));
                 return;
