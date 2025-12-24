@@ -72,7 +72,12 @@ async function handleJournalEntryForm(req,res){
         }
         portions[i].description = req.body[(req.mobile ? "m_" : "") + "description_" + i];
         if(typeof req.body[(req.mobile ? "m_" : "") + "account_id_" + i] !== "string" || isNaN((portions[i].account_id = parseInt(req.body[(req.mobile ? "m_" : "") + "account_id_" + i])))){
-            res.status(400).send("Bad or missing account_id in row " + (i + 1));
+            res.render('add-journal-entry', {
+                error: "Error: Missing account in row " + (i + 1),
+                prefill: req.body,
+                rowCount: ("body" in req && "rowCount" in req.body) ? (parseInt(req.body.rowCount) || 2) : 2,
+                accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
+            });
             return;
         }
         if(req.mobile){

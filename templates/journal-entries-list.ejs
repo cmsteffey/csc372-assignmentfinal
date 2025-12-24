@@ -30,7 +30,7 @@
             <%-include('partials/accountSelector', {name: "account_id", placeholder: "<All Accounts>", placeholderHidden: false, accounts: accounts, selected: prefill["account_id"]})%>
             </label><br>
             <label>From: <input type="date" name="start_date" <% if(prefill !== undefined && prefill.start_date) { %> value="<%=prefill.start_date%>"<% } %>><br></label>
-            <label>Up to: <input type="date" name="end_date" <% if(prefill !== undefined && prefill.start_date) { %> value="<%=prefill.start_date%>"<% } %>><br></label>
+            <label>Up to: <input type="date" name="end_date" <% if(prefill !== undefined && prefill.end_date) { %> value="<%=prefill.end_date%>"<% } %>><br></label>
             <button>Search</button>
 
         </form>

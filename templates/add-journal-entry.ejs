@@ -53,7 +53,7 @@
                     <tr class="mobile-replacement">
                         <td><label><input type="text" placeholder="Description..." name="m_description_<%= i %>"<%if(prefill && prefill["m_description_" + i]) { %> value="<%=prefill["m_description_" + i]%>"<% } %>></label><br>
                             <label><%- include('partials/accountSelector', {name: "m_account_id_" + i, accounts: accounts, selected: prefill["m_account_id_" + i]}) %></label><br>
-                            <label><select name="d/c_<%= i %>"><option value="d">Debit</option><option value="c">Credit</option></select></label>
+                            <label><select name="d/c_<%= i %>"><option value="d"<% if(prefill["d/c_" + i] === 'd') {%> selected<%}%>>Debit</option><option value="c"<% if(prefill["d/c_" + i] === 'c') {%> selected<%}%>>Credit</option></select></label>
                             <label>$<input type="text" name="amount_<%= i %>"<%if(prefill && prefill["amount_" + i]?.length) { %> value="<%=prefill["amount_" + i]%>"<% }%>></label><br><br>
                         </td>
                     </tr>
