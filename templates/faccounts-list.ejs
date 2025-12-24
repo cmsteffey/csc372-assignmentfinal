@@ -6,8 +6,8 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>My Accounts</title>
-    <%- include('partials/commonhead') %>
     <%- include('partials/table-basedcss') %>
+    <%- include('partials/commonhead') %>
 </head>
 <body>
 <%- include('partials/header') %>
@@ -27,9 +27,9 @@
     <table class="main-table">
         <thead>
             <tr>
-                <th style="width: 13ch;" class="mobile-elidable">Account Type</th>
-                <th style="min-width: 45ch">Account Name</th>
-                <th style="width: 15ch">Balance</th>
+                <th style="width: 14ch;" class="mobile-elidable">Account Type</th>
+                <th>Account Name</th>
+                <th style="width: <%=Math.max(7, accounts.map(x=>Math.abs(x.balance)).reduce((acc, x) => x > acc ? x : acc, 0).toString().length + 2)%>ch">Balance</th>
             </tr>
         </thead>
         <tbody>
