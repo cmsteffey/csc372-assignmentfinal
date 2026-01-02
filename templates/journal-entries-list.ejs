@@ -36,18 +36,12 @@
         </form>
     </div>
     <table class="main-table">
-        <colgroup class="mobile-elidable">
-            <col style="width: var(--w-1)">
-            <col style="width: var(--w-2)">
-            <col style="width: calc(100% - var(--w-1) - var(--w-2) - var(--w-4) - var(--w-5))">
-            <col style="width: var(--w-4)">
-            <col style="width: var(--w-5)">
-        </colgroup>
-        <colgroup class="mobile-replacement">
-            <col style="width: var(--w-2)">
-            <col style="width: calc(100% - var(--w-2) - var(--w-4) - var(--w-5))">
-            <col style="width: var(--w-4)">
-            <col style="width: var(--w-5)">
+        <colgroup>
+            <col style="width: 13ch" class="mobile-elidable">
+            <col style="width: <%=Math.max(7, portions.map(x=>x.faccount_nickname).reduce((acc, x) => x.length > acc ? x.length : acc, 0))%>.5ch">
+            <col>
+            <col style="width: <%=Math.max(5, portions.reduce((acc, x) => x.amount > acc ? x.amount : acc, 0).toString().length + 2)%>.5ch">
+            <col style="width: <%=Math.max(6, Math.abs(portions.reduce((acc, x) => x.amount < acc ? x.amount : acc, 0)).toString().length + 2)%>.5ch">
         </colgroup>
         <thead>
             <tr>
@@ -89,14 +83,14 @@
                         <td class="mobile-elidable"><%= portion.faccount_category_string %></td>
                         <td><%= portion.faccount_nickname %></td>
                         <td><%= portion.description.substring(0, 17) %><% if(portion.description.length > 17) { %><span class="mobile-replacement">...</span><span class="mobile-elidable"><%=portion.description.substring(17)%></span><% } %></td>
-                        <td><% if (portion.amount > 0) { totalDebit += portion.amount; total += portion.amount; %> $<%=Math.floor(portion.amount / 100)%>.<%=(portion.amount % 100).toString().padStart(2, '0')%> <% } %></td>
-                        <td><% if (portion.amount < 0) { totalCredit -= portion.amount; total += portion.amount; %> $<%=Math.floor(-portion.amount / 100)%>.<%=(-portion.amount % 100).toString().padStart(2, '0')%> <% } %></td>
+                        <td><% if (portion.amount > 0) { totalDebit += portion.amount; total += portion.amount; %>$<%=Math.floor(portion.amount / 100)%>.<%=(portion.amount % 100).toString().padStart(2, '0')%><% } %></td>
+                        <td><% if (portion.amount < 0) { totalCredit -= portion.amount; total += portion.amount; %>$<%=Math.floor(-portion.amount / 100)%>.<%=(-portion.amount % 100).toString().padStart(2, '0')%><% } %></td>
                     </tr>
                 <% } %>
                 <%if (typeof showTotals === 'boolean' && showTotals) { %>
                     <tr class="section-name">
                         <td colspan="3" class="mobile-elidable"><strong>Total Debits: </strong></td>
-                        <td colspan="2" class="mobile-replacement"><strong>Total Credits: </strong></td>
+                        <td colspan="2" class="mobile-replacement"><strong>Total Debits: </strong></td>
                         <td><strong>$<%=Math.floor(totalDebit / 100)%>.<%=(totalDebit % 100).toString().padStart(2, '0')%></strong></td>
                         <td></td>
                     </tr>

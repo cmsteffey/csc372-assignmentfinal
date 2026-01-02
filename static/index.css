@@ -76,11 +76,17 @@ main {
 td{
     font-size: 1em;
 }
-.mobile-replacement {
+col.mobile-replacement {
+    display: none;
+}
+.mobile-replacement:not(col) {
      display: none;
- }
+}
 @media(width <= 80ch){
-    .mobile-elidable {
+    col.mobile-elidable {
+        display: none !important;
+    }
+    .mobile-elidable:not(col) {
         display: none !important;
     }
     .mobile-replacement {
