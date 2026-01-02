@@ -55,7 +55,7 @@
                     <% } %>
                     <tr>
                         <td class="mobile-elidable"><%= account.categoryString %></td>
-                        <td><%= account.ticker ? "STOCK: " + account.ticker : account.nickname %><%if (account.ticker) { %>, <%= account.shares %> share<%=account.shares !== 1 ? "s" : ""%> <a href="/update-stock-account/<%=account.id%>">(Update value)</a><%}%></td>
+                        <td><%= account.ticker ? "STOCK: " + account.ticker : account.nickname %><%if (account.ticker) { %>, <%= account.shares %> share<%=account.shares !== 1 ? "s" : ""%> <a href="/update-stock-account/<%=account.id%>">(Update value)</a><%}%><% if (account.default_cashback_pct !== null) {%> <a href="/quick-charge/<%=account.id%>">&#9889; Quick Charge</a><% } %></td>
                         <td<% if(account.balance < 0) { %> class="negative"<% } %>><%=account.balance < 0 ? "(" : ""%>$<%= Math.floor(Math.abs(account.balance) / 100) %>.<%= (Math.abs(account.balance) % 100).toString().padStart(2, '0')%><%=account.balance < 0 ? ")" : ""%></td>
                     </tr>
                     <% if (i === accounts.length - 1 || accounts[i].category !== accounts[i + 1].category) { %>

@@ -4,6 +4,8 @@ import {authenticationBarrier} from "../middleware/Authentication.js";
 
 let router = new Router();
 router.get('/my-accounts', authenticationBarrier, fAccountController.myFAccountsPage);
+router.get('/register-cc', authenticationBarrier, fAccountController.registerCcPage);
+router.post('/register-cc', authenticationBarrier, fAccountController.handleRegisterCcForm)
 router.get('/add-account', authenticationBarrier, fAccountController.addFAccountPage);
 router.post('/add-account', authenticationBarrier, fAccountController.handleAddFAccountForm);
 router.get("/add-stock-account", authenticationBarrier, fAccountController.addStockFAccountPage);
