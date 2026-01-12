@@ -9,5 +9,8 @@ router.post('/add-journal-entry-submit', authenticationBarrier, journalEntryCont
 router.post('/add-journal-entry-submit-mobile', authenticationBarrier, (req, res, next) => {req.mobile = true; next();}, journalEntryController.handleJournalEntryForm);
 router.get("/update-stock-account/:account_id", authenticationBarrier, journalEntryController.updateStockPage)
 router.get('/my-journal-entries', authenticationBarrier, journalEntryController.myJournalEntriesPage);
-router.post("/journal-entries-search", authenticationBarrier, journalEntryController.journalEntrySearch)
+router.post("/journal-entries-search", authenticationBarrier, journalEntryController.journalEntrySearch);
+router.get("/quick-charge/:id", authenticationBarrier, journalEntryController.quickChargePage)
+router.post("/quick-charge/:id", authenticationBarrier, journalEntryController.handleQuickChargeForm)
+
 export default router;

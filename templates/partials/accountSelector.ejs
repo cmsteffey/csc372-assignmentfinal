@@ -1,11 +1,12 @@
 ﻿<select name="<%=name%>">
-    <option value="" <% if(typeof placeholderHidden !== 'boolean' || placeholderHidden) { %>hidden disabled <% } %>selected><%=typeof placeholder === 'string' ? placeholder : "Pick account..."%></option>
-    <% for(let j = 0; j < accounts.length; ++j) { %>
-        <% if(j === 0 || accounts[j].category !== accounts[j-1].category) {%>
-        <optgroup label="<%= accounts[j].categoryString %>">
+    <option value="" <% if(typeof placeholderHidden !== 'boolean' || placeholderHidden) { %>hidden disabled <% } %> selected><%=typeof placeholder === 'string' ? placeholder : "Pick account..."%></option>
+    <% var accountsSubset = accounts.filter(x=>typeof category === 'undefined' || category === x.categoryString)%>
+    <% for(let j = 0; j < accountsSubset.length; ++j) { %>
+        <% if(j === 0 || accountsSubset[j].category !== accountsSubset[j-1].category) {%>
+        <optgroup label="<%= accountsSubset[j].categoryString %>">
             <% } %>
-            <option value="<%= accounts[j].id %>"<%if(selected && selected === accounts[j].id.toString()){%> selected<%}%>><%= accounts[j].nickname %></option>
-            <% if(j === accounts.length - 1 || accounts[j].category !== accounts[j+1].category) { %>
+            <option value="<%= accountsSubset[j].id %>"<%if(selected && selected === accountsSubset[j].id.toString()){%> selected<%}%>><%= accountsSubset[j].nickname %></option>
+            <% if(j === accountsSubset.length - 1 || accountsSubset[j].category !== accountsSubset[j+1].category) { %>
         </optgroup>
         <% } %>
     <% } %>

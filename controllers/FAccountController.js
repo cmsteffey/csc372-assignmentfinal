@@ -1,5 +1,7 @@
 import fAccountModel from "../models/FAccount.js"
 import fAccountType from "../models/FAccountType.js";
+import creditCardInfo from "../models/CreditCardInfo.js";
+import {parseDollarValue} from "../common/functions.js";
 
 async function myFAccountsPage(req,res){
     res.render('faccounts-list', {
@@ -11,6 +13,27 @@ async function myFAccountsPage(req,res){
 }
 async function addFAccountPage(req,res){
     res.render('add-faccount', {categories: fAccountType.map((x, i) => ({name: x.name, value: i}))});
+}
+async function registerCcPage(req,res){
+    res.render('register-cc', {
+        accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
+        selected: null
+    });
+}
+async function handleRegisterCcForm(req,res){
+    let fAccount = isNaN(req.body.faccount_id) ? null : await fAccountModel.getFAccountById(req.body.faccount_id);
+    if(fAccount === null || fAccount.owner !== req.authenticatedUser.id || fAccount.category !== fAccountType.findIndex(x=>x.name === "Liability")){
+        await registerCcPage(req,res);
+        return;
+    }
+    let cashbackPercent = parseDollarValue(req.body.cashback);
+    console.log(cashbackPercent);
+    if (isNaN(cashbackPercent)){
+        await registerCcPage(req,res);
+        return;
+    }
+    await creditCardInfo.addCreditCardInfo(fAccount.id, cashbackPercent);
+    res.redirect('/my-accounts')
 }
 async function addStockFAccountPage(req,res){
     res.render('add-stock-faccount');
@@ -49,4 +72,4 @@ async function handleAddFAccountForm(req, res){
 }
 
 
-export default {myFAccountsPage, addFAccountPage, handleAddFAccountForm, addStockFAccountPage, handleAddStockFAccountForm};
+export default {myFAccountsPage, addFAccountPage, handleAddFAccountForm, addStockFAccountPage, handleAddStockFAccountForm, registerCcPage, handleRegisterCcForm};

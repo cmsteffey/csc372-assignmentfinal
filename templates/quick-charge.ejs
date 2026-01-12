@@ -1,0 +1,29 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Quick Charge</title>
+    <%- include('partials/commonhead') %>
+</head>
+<body>
+<%- include('partials/header') %>
+<main>
+    <h1>Quick Charge to <%=ccAccount.nickname%></h1>
+    <% if(typeof error !== "undefined") { %>
+    <div class="error-div">
+        <span><%=error%></span>
+    </div>
+    <% } %>
+    <form method="post" enctype="multipart/form-data">
+        <label>Expense type: <%- include('partials/accountSelector.ejs', {name: 'expense_account_id', category: "Expense", selected: typeof prefill !== "undefined" ? prefill['expense_account_id'] : undefined})%></label><br>
+        <!--label>Transaction date: <input type="date" name="date"<%if(typeof prefill !== "undefined" && prefill.date) { %> value="<%=prefill.date%>"<%}%>></label><br-->
+        <label>Credit Card Charge: $<input type="text" name="charge_amt"<%if(typeof prefill !== "undefined" && prefill.charge_amt) { %> value="<%=prefill.charge_amt%>"<%}%>></label><br>
+        <label>Cashback amount: <input type="text" name="cashback" value="<%if(typeof prefill !== "undefined" && prefill.cashback) { %><%=prefill.cashback%><%} else {%><%=((Math.floor(ccAccount.default_cashback_pct / 100)).toString() + "." + (ccAccount.default_cashback_pct % 100).toString().padStart(2, '0'))%><% } %>">%</label>
+        <button>Generate Entry</button>
+    </form>
+</main>
+</body>
+</html>

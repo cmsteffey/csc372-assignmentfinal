@@ -1,6 +1,7 @@
 import journalEntryModel from "../models/JournalEntry.js"
 import fAccountModel from "../models/FAccount.js";
 import fAccountType from "../models/FAccountType.js"
+import {parseDollarValue} from "../common/functions.js";
 async function myJournalEntriesPage(req,res){
     res.render('journal-entries-list', {
         pageTitle: "My Journal Entries",
@@ -126,9 +127,10 @@ async function handleJournalEntryForm(req,res){
         }
         portions[i].amount = portions[i].credit === undefined ? portions[i].debit : -portions[i].credit;
     }
-    if(portions.reduce((acc, x) => acc + x.amount, 0) !== 0){
+    let dcDifference = portions.reduce((acc, x) => acc + x.amount, 0);
+    if(dcDifference !== 0){
         res.render('add-journal-entry', {
-            error: "Error: Debit and credit totals are not equal",
+            error: "Error: Debit and credit totals are not equal. Debits - Credits = " + (dcDifference < 0 ? '-' : '') + Math.abs(Math.trunc(dcDifference / 100)) + "." + Math.abs(dcDifference % 100).toString().padStart(2, '0'),
             prefill: req.body,
             rowCount: ("body" in req && "rowCount" in req.body) ? (parseInt(req.body.rowCount) || 2) : 2,
             accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
@@ -207,35 +209,115 @@ async function updateStockPage(req, res){
         accounts
     })
 }
-function parseDollarValue(string){
-    if(string.length === 0) return NaN;
-    let multiplier;
-    if(string[0] === '-'){
-        multiplier = -1;
-        string = string.substring(1);
-    } else {
-        multiplier = 1;
+async function quickChargePage(req, res){
+    let accountIdString = req.params.id;
+    let accountId;
+    if(!accountIdString || isNaN((accountId = parseInt(accountIdString)))){
+        res.redirect("/my-accounts");
+        return;
     }
-    let periodIndex = string.indexOf('.');
-    if(periodIndex === -1){
-        multiplier *= 100;
-    } else if (periodIndex === string.length - 2){
-        multiplier *= 10;
-    } else if (periodIndex !== string.length - 3){
-        return NaN;
+    let account = await fAccountModel.getFAccountById(accountId);
+    if(!account || account.default_cashback_pct === null || account.owner !== req.authenticatedUser.id) {
+        res.redirect(303, '/my-accounts');
+        return;
     }
-    let charArray = Array.from(string);
-    let value = 0;
-    for(let i = 0; i < charArray.length; i++) {
-        if (i === periodIndex)
-            continue;
-        let charCode = charArray[i].charCodeAt(0)
-        if(charCode < 48 || charCode > 57){
-            return NaN;
-        }
-        value *= 10;
-        value += charArray[i].charCodeAt(0) - 48;
-    }
-    return value * multiplier;
+    res.render('quick-charge', {
+        ccAccount: account,
+        accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id)
+    });
 }
-export default {myJournalEntriesPage, addJournalEntryPage, handleJournalEntryForm, updateStockPage, journalEntrySearch}
+async function handleQuickChargeForm(req, res){
+    let accounts = await fAccountModel.getFAccountsForUser(req.authenticatedUser.id);
+    let ccAccountIdString = req.params.id;
+    let ccAccountId;
+    if(!ccAccountIdString || isNaN((ccAccountId = parseInt(ccAccountIdString)))){
+        res.redirect(303, '/my-accounts');
+        return;
+    }
+    let ccAccount = await fAccountModel.getFAccountById(ccAccountId);
+    if(!ccAccount || ccAccount.default_cashback_pct === null || ccAccount.owner !== req.authenticatedUser.id) {
+        res.redirect(303, '/my-accounts');
+        return;
+    }
+    let cashbackReceivableAccount = accounts.find(x=>x.nickname === "Cashback Receivable");
+    if(!cashbackReceivableAccount){
+        res.render('quick-charge', {
+            ccAccount,
+            accounts,
+            prefill: req.body ?? {},
+            error: "No 'Cashback Receivable' financial account found under this user account",
+        })
+        return;
+    }
+    let expenseAccountIdString = req.body?.expense_account_id;
+    let expenseAccountId;
+    if(!expenseAccountIdString || isNaN((expenseAccountId = parseInt(expenseAccountIdString)))){
+        res.render('quick-charge', {
+            ccAccount,
+            accounts,
+            prefill: req.body ?? {},
+            error: "Expense account not selected"
+        })
+        return;
+    }
+    let expenseAccount = await fAccountModel.getFAccountById(expenseAccountId);
+    if(!expenseAccount || expenseAccount.categoryString !== "Expense" || expenseAccount.owner !== req.authenticatedUser.id) {
+        res.render('quick-charge', {
+            ccAccount,
+            accounts,
+            prefill: req.body ?? {},
+            error: "Non-existent expense account selected"
+        })
+        return;
+    }
+
+    let cashbackPct = parseDollarValue(req.body.cashback);
+    if(isNaN(cashbackPct)){
+        res.render('quick-charge', {
+            ccAccount,
+            accounts,
+            prefill: req.body ?? {},
+            error: "Mis-entered cashback pct"
+        })
+        return;
+    }
+    let chargeAmtString = req.body?.charge_amt;
+    let chargeAmt;
+    if(isNaN(chargeAmt = parseDollarValue(chargeAmtString))){
+        res.render('quick-charge', {
+            ccAccount,
+            accounts,
+            prefill: req.body ?? {},
+            error: "Mis-entered charge_amt"
+        })
+        return;
+    }
+    let cashbackAmt = cashbackPct * chargeAmt;
+    console.log(cashbackAmt);
+    cashbackAmt = Math.floor(cashbackAmt / 10000) + (cashbackAmt % 10000 >= 5000 ? 1 : 0);
+    console.log(cashbackAmt);
+    res.render('add-journal-entry', {
+        prefill: {
+            "journal_entry_name": "QC",
+            "account_id_0": expenseAccountId.toString(),
+            "account_id_1": ccAccountId.toString(),
+            "account_id_2": cashbackReceivableAccount.id.toString(),
+            "debit_0": Math.floor((chargeAmt - cashbackAmt)/100).toString() + "." + ((chargeAmt - cashbackAmt)%100).toString().padStart(2, '0'),
+            "credit_1": Math.floor((chargeAmt)/100).toString() + "." + ((chargeAmt)%100).toString().padStart(2, '0'),
+            "debit_2": Math.floor((cashbackAmt)/100).toString() + "." + ((cashbackAmt)%100).toString().padStart(2, '0'),
+
+            "m_account_id_0": expenseAccountId.toString(),
+            "m_account_id_1": ccAccountId.toString(),
+            "m_account_id_2": cashbackReceivableAccount.id.toString(),
+            "amount_0": Math.floor((chargeAmt - cashbackAmt)/100).toString() + "." + ((chargeAmt - cashbackAmt)%100).toString().padStart(2, '0'),
+            "amount_1": Math.floor((chargeAmt)/100).toString() + "." + ((chargeAmt)%100).toString().padStart(2, '0'),
+            "amount_2": Math.floor((cashbackAmt)/100).toString() + "." + ((cashbackAmt)%100).toString().padStart(2, '0'),
+            "d/c_0": "d",
+            "d/c_1": "c",
+            "d/c_2": "d"
+        },
+        accounts,
+        "rowCount": 3
+    })
+}
+export default {myJournalEntriesPage, addJournalEntryPage, handleJournalEntryForm, updateStockPage, journalEntrySearch, quickChargePage, handleQuickChargeForm}
