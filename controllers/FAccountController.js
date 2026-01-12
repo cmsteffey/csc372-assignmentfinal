@@ -32,10 +32,8 @@ async function handleRegisterCcForm(req,res){
         await registerCcPage(req,res);
         return;
     }
-    creditCardInfo.addCreditCardInfo(fAccount.id, cashbackPercent);
-    res.render('faccounts-list', {
-        accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
-    } )
+    await creditCardInfo.addCreditCardInfo(fAccount.id, cashbackPercent);
+    res.redirect('/my-accounts')
 }
 async function addStockFAccountPage(req,res){
     res.render('add-stock-faccount');
