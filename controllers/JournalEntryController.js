@@ -223,7 +223,6 @@ async function quickChargePage(req, res){
     }
     res.render('quick-charge', {
         ccAccount: account,
-        cb_account_id: account.default_cashback_account,
         accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id)
     });
 }
