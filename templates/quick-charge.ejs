@@ -18,10 +18,11 @@
     </div>
     <% } %>
     <form method="post" enctype="multipart/form-data">
-        <label>Expense type: <%- include('partials/accountSelector.ejs', {name: 'expense_account_id', categories: ["Expense", "Asset"], selected: typeof prefill !== "undefined" ? prefill['expense_account_id'] : undefined})%></label><br>
+        <label>Expense type: <%- include('partials/accountSelector.ejs', {name: 'expense_account_id', categories: ["Expense", "Asset"], selected: typeof prefill !== "undefined" && prefill['expense_account_id'] ? prefill['expense_account_id'] : undefined})%></label><br>
         <!--label>Transaction date: <input type="date" name="date"<%if(typeof prefill !== "undefined" && prefill.date) { %> value="<%=prefill.date%>"<%}%>></label><br-->
         <label>Credit Card Charge: $<input type="text" name="charge_amt"<%if(typeof prefill !== "undefined" && prefill.charge_amt) { %> value="<%=prefill.charge_amt%>"<%}%>></label><br>
         <label>Cashback amount: <input type="text" name="cashback" value="<%if(typeof prefill !== "undefined" && prefill.cashback) { %><%=prefill.cashback%><%} else {%><%=((Math.floor(ccAccount.default_cashback_pct / 100)).toString() + "." + (ccAccount.default_cashback_pct % 100).toString().padStart(2, '0'))%><% } %>">%</label>
+        <label>Cashback account: <%- include('partials/accountSelector.ejs', {name: 'cb_account_id', categories: ["Asset"], selected: typeof prefill !== "undefined" && prefill['cb_account_id'] ? prefill['cb_account_id'] : undefined})%></label><br>
         <button>Generate Entry</button>
     </form>
 </main>
