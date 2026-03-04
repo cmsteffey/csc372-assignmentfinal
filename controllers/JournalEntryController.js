@@ -305,6 +305,7 @@ async function handleQuickChargeForm(req, res){
             "debit_0": Math.floor((chargeAmt - cashbackAmt)/100).toString() + "." + ((chargeAmt - cashbackAmt)%100).toString().padStart(2, '0'),
             "credit_1": Math.floor((chargeAmt)/100).toString() + "." + ((chargeAmt)%100).toString().padStart(2, '0'),
             "debit_2": Math.floor((cashbackAmt)/100).toString() + "." + ((cashbackAmt)%100).toString().padStart(2, '0'),
+            "description_2": (cashbackAmt % 100).toString() + "%",
 
             "m_account_id_0": expenseAccountId.toString(),
             "m_account_id_1": ccAccountId.toString(),
@@ -314,7 +315,8 @@ async function handleQuickChargeForm(req, res){
             "amount_2": Math.floor((cashbackAmt)/100).toString() + "." + ((cashbackAmt)%100).toString().padStart(2, '0'),
             "d/c_0": "d",
             "d/c_1": "c",
-            "d/c_2": "d"
+            "d/c_2": "d",
+            "m_description_2": (cashbackAmt % 100).toString() + "%",
         },
         accounts,
         "rowCount": 3
