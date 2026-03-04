@@ -239,13 +239,13 @@ async function handleQuickChargeForm(req, res){
         res.redirect(303, '/my-accounts');
         return;
     }
-    let cashbackReceivableAccount = accounts.find(x=>x.nickname === "Cashback Receivable");
-    if(!cashbackReceivableAccount){
+    let cashbackAccount = req.body?.cb_account_id
+    if(!cashbackAccount){
         res.render('quick-charge', {
             ccAccount,
             accounts,
             prefill: req.body ?? {},
-            error: "No 'Cashback Receivable' financial account found under this user account",
+            error: "No cashback account selected",
         })
         return;
     }
@@ -301,14 +301,14 @@ async function handleQuickChargeForm(req, res){
             "journal_entry_name": "QC",
             "account_id_0": expenseAccountId.toString(),
             "account_id_1": ccAccountId.toString(),
-            "account_id_2": cashbackReceivableAccount.id.toString(),
+            "account_id_2": cashbackAccount.toString(),
             "debit_0": Math.floor((chargeAmt - cashbackAmt)/100).toString() + "." + ((chargeAmt - cashbackAmt)%100).toString().padStart(2, '0'),
             "credit_1": Math.floor((chargeAmt)/100).toString() + "." + ((chargeAmt)%100).toString().padStart(2, '0'),
             "debit_2": Math.floor((cashbackAmt)/100).toString() + "." + ((cashbackAmt)%100).toString().padStart(2, '0'),
 
             "m_account_id_0": expenseAccountId.toString(),
             "m_account_id_1": ccAccountId.toString(),
-            "m_account_id_2": cashbackReceivableAccount.id.toString(),
+            "m_account_id_2": cashbackAccount.toString(),
             "amount_0": Math.floor((chargeAmt - cashbackAmt)/100).toString() + "." + ((chargeAmt - cashbackAmt)%100).toString().padStart(2, '0'),
             "amount_1": Math.floor((chargeAmt)/100).toString() + "." + ((chargeAmt)%100).toString().padStart(2, '0'),
             "amount_2": Math.floor((cashbackAmt)/100).toString() + "." + ((cashbackAmt)%100).toString().padStart(2, '0'),

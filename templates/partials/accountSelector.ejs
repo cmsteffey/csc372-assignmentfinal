@@ -5,7 +5,7 @@
         <% if(j === 0 || accountsSubset[j].category !== accountsSubset[j-1].category) {%>
         <optgroup label="<%= accountsSubset[j].categoryString %>">
             <% } %>
-            <option value="<%= accountsSubset[j].id %>"<%if(selected && selected === accountsSubset[j].id.toString()){%> selected<%}%>><%= accountsSubset[j].nickname %></option>
+            <option value="<%= accountsSubset[j].id %>"<%if(selected && selected == accountsSubset[j].id.toString()){%> selected<%}%>><%= accountsSubset[j].nickname %></option>
             <% if(j === accountsSubset.length - 1 || accountsSubset[j].category !== accountsSubset[j+1].category) { %>
         </optgroup>
         <% } %>
