@@ -21,7 +21,7 @@ async function registerCcPage(req,res){
     });
 }
 async function handleRegisterCcForm(req,res){
-    let fAccount = isNaN(req.body.faccount_id) ? null : await fAccountModel.getFAccountById(req.body.faccount_id);
+    let fAccount = isNaN(parseInt(req.body.faccount_id)) ? null : await fAccountModel.getFAccountById(parseInt(req.body.faccount_id));
     if(fAccount === null || fAccount.owner !== req.authenticatedUser.id || fAccount.category !== fAccountType.findIndex(x=>x.name === "Liability")){
         await registerCcPage(req,res);
         return;
@@ -32,7 +32,12 @@ async function handleRegisterCcForm(req,res){
         await registerCcPage(req,res);
         return;
     }
-    await creditCardInfo.addCreditCardInfo(fAccount.id, cashbackPercent);
+    let cbAccount = isNaN(parseInt(req.body.cb_account_id)) ? null : await fAccountModel.getFAccountById(parseInt(req.body.cb_acocunt_id));
+    if(cbAccount === null || cbAccount.owner !== req.authenticatedUser.id || cbAccount.category !== fAccountType.findIndex(x=>x.name === "Asset")){
+        await registerCcPage(req,res);
+        return;
+    }
+    await creditCardInfo.addCreditCardInfo(fAccount.id, cashbackPercent, cbAccount.id);
     res.redirect('/my-accounts')
 }
 async function addStockFAccountPage(req,res){
