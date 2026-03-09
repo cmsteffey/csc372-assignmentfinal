@@ -82,7 +82,7 @@
                             <td><form method="GET" action="/edit-entry/<%=portion.id%>"><button style="text-align: center">Edit</button></form></td>
                             <td><button style="text-align: center; color: #992222" popovertarget="delete-confirm-<%=portion.id%>">Delete</button></td>
                         </tr>
-                        <div popover id="delete-confirm-<%=portion.id%>" style="position: fixed; top: 50dvh; top: 50vh; left: 50dvw; left: 50vw; transform: translate(-50%, -50%)">
+                        <div popover id="delete-confirm-<%=portion.id%>" style="">
                             <h3>Delete "<%=portion.name%>"?</h3>
                             <form method="GET" action="/delete-entry/<%=portion.id%>"><button style="background-color: #FF8888">Delete</button></form>
                             <button popovertargetaction="hide" popovertarget="delete-confirm-<%=portion.id%>">Cancel</button>
