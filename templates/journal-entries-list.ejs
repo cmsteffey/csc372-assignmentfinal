@@ -73,12 +73,14 @@
                     <% var portion = portions[i] %>
                     <% if(i === 0 || portions[i].id !== portions[i - 1].id) { %>
                         <tr class="mobile-elidable section-name<% if(portion.flagged) { %> flagged<% } %>">
-                            <td colspan="4"><%= portion.name %><% if(portion.for_date) { %><br><%=portion.for_date%><% } %></td>
-                            <td><form method="GET" action="/edit-entry/<%=portion.id%>"><button>Edit</button></form></td>
-                        </tr>
-                        <tr class="mobile-replacement section-name<% if(portion.flagged) { %> flagged<% } %>">
                             <td colspan="3"><%= portion.name %><% if(portion.for_date) { %><br><%=portion.for_date%><% } %></td>
                             <td><form method="GET" action="/edit-entry/<%=portion.id%>"><button>Edit</button></form></td>
+                            <td><form method="GET" action="/delete-entry/<%=portion.id%>"><button style="text-align: center; color: #992222">Delete</button></form></td>
+                        </tr>
+                        <tr class="mobile-replacement section-name<% if(portion.flagged) { %> flagged<% } %>">
+                            <td colspan="2"><%= portion.name %><% if(portion.for_date) { %><br><%=portion.for_date%><% } %></td>
+                            <td><form method="GET" action="/edit-entry/<%=portion.id%>"><button style="text-align: center">Edit</button></form></td>
+                            <td><form method="GET" action="/delete-entry/<%=portion.id%>"><button style="text-align: center; color: #992222">Delete</button></form></td>
                         </tr>
                     <% } %>
                     <tr>
