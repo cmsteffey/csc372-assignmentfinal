@@ -21,7 +21,7 @@
         <input type="hidden" name="rowCount" value="<%= rowCount %>">
         <label>Entry name: <input style="width: 50ch" type="text" name="journal_entry_name"<% if(prefill && prefill.journal_entry_name) { %> value="<%=prefill.journal_entry_name%>"<% } %>></label><br>
         <label>Entry date: <input type="date" name="journal_entry_date" value="<%if(prefill && prefill.journal_entry_date) { %><%=prefill.journal_entry_date%><% } %>"></label><br>
-        <label>Flagged? <input type="checkbox" value="" name="flagged"></label>
+        <label>Flagged? <input type="checkbox"<% if(prefill && typeof prefill.flagged === "string") { %> checked<% } %>value="" name="flagged"></label>
         <table class="mobile-elidable">
             <thead>
                 <tr>
