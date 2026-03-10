@@ -74,12 +74,12 @@
                     <% if(i === 0 || portions[i].id !== portions[i - 1].id) { %>
                         <tr class="mobile-elidable section-name<% if(portion.flagged) { %> flagged<% } %>">
                             <td colspan="3"><%= portion.name %><% if(portion.for_date) { %><br><%=portion.for_date%><% } %></td>
-                            <td><form method="GET" action="/edit-entry/<%=portion.id%>"><button>Edit</button></form></td>
+                            <td><form method="GET" action="/edit-journal-entry/<%=portion.id%>"><button>Edit</button></form></td>
                             <td><button style="text-align: center; color: #992222" popovertarget="delete-confirm-<%=portion.id%>">Delete</button></td>
                         </tr>
                         <tr class="mobile-replacement section-name<% if(portion.flagged) { %> flagged<% } %>">
                             <td colspan="2"><%= portion.name %><% if(portion.for_date) { %><br><%=portion.for_date%><% } %></td>
-                            <td><form method="GET" action="/edit-entry/<%=portion.id%>"><button style="text-align: center">Edit</button></form></td>
+                            <td><form method="GET" action="/edit-journal-entry/<%=portion.id%>"><button style="text-align: center">Edit</button></form></td>
                             <td><button style="text-align: center; color: #992222" popovertarget="delete-confirm-<%=portion.id%>">Delete</button></td>
                         </tr>
                         <div popover id="delete-confirm-<%=portion.id%>" style="">

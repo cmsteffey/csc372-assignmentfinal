@@ -38,6 +38,33 @@ async function addJournalEntryPage(req,res){
         accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
     })
 }
+async function editJournalEntryPage(req,res){
+    if(isNaN(parseInt(req.params.id))){
+        return res.redirect("/my-journal-entries");
+    }
+    let portions = await journalEntryModel.searchTransactionPortions(req.authenticatedUser.id, null, null, null, req.params.id);
+    if(portions.length === 0){
+        return res.redirect("/my-journal-entries");
+    }
+    let prefill = {}
+    for(let i = 0; i < portions.length; ++i){
+        prefill["d/c_" + i] = portions[i].amount < 0 ? "c" : "d";
+        prefill["amount_" + i] = prefill[(portions[i].amount < 0 ? "credit" : "debit") + "_" + i] = Math.abs(portions[i].amount).toString().slice(0, -2) + "." + Math.abs(portions[i].amount).toString().padStart(2, '0').slice(-2);
+        prefill["m_description_" + i] = prefill["description_" + i] = portions[i].description;
+        prefill["m_account_id_" + i] = prefill["account_id_" + i] = portions[i].faccount_id.toString();
+    }
+    prefill["journal_entry_name"] = portions[0].name;
+    prefill["flagged"] = portions[0].flagged ? "" : undefined;
+    prefill["journal_entry_date"] = portions[0].for_date;
+    prefill["replace_entry_id"] = req.params.id;
+    prefill["page_title"] = "Edit '" + portions[0].name + "'"
+    res.render('add-journal-entry', {
+        rowCount: portions.length,
+        prefill,
+        accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
+
+    })
+}
 async function handleJournalEntryForm(req,res){
     if(typeof req.body.journal_entry_name !== "string" || req.body.journal_entry_name.length === 0){
         res.render('add-journal-entry', {
@@ -145,6 +172,20 @@ async function handleJournalEntryForm(req,res){
             accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
         });
         return;
+    }
+    let replacedJournalEntryId = parseInt(req.body.replace_entry_id);
+    if(!isNaN(replacedJournalEntryId)){
+        if(await fAccountModel.getOwnerForAccounts((await journalEntryModel.searchTransactionPortions(null, null, null, null, replacedJournalEntryId)).map(x=>x.faccount_id)) === req.authenticatedUser.id){
+            await journalEntryModel.deleteJournalEntry(replacedJournalEntryId);
+        } else {
+            res.render('add-journal-entry', {
+                error: "Error: You are trying to edit a deleted journal entry",
+                prefill: req.body,
+                rowCount: ("body" in req && "rowCount" in req.body) ? (parseInt(req.body.rowCount) || 2) : 2,
+                accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
+            });
+            return;
+        }
     }
     let journalEntryId = await journalEntryModel.createJournalEntry(req.body.journal_entry_name, req.body.journal_entry_date, typeof req.body.flagged === "string");
     await journalEntryModel.fillJournalEntry(journalEntryId, portions);
@@ -322,4 +363,4 @@ async function handleQuickChargeForm(req, res){
         "rowCount": 3
     })
 }
-export default {myJournalEntriesPage, addJournalEntryPage, handleJournalEntryForm, updateStockPage, journalEntrySearch, quickChargePage, handleQuickChargeForm}
+export default {myJournalEntriesPage, addJournalEntryPage, handleJournalEntryForm, updateStockPage, journalEntrySearch, quickChargePage, handleQuickChargeForm, editJournalEntryPage}
