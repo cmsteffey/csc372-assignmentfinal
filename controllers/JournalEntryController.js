@@ -192,6 +192,21 @@ async function handleJournalEntryForm(req,res){
     res.redirect('/my-journal-entries');
 
 }
+async function handleDeleteEntryForm(req, res){
+    let entryId;
+    if(isNaN((entryId = parseInt(req.params.id)))){
+        res.status(400).send("Non-numeric entry id");
+        return;
+    }
+    if(await fAccountModel.getOwnerForAccounts((await journalEntryModel.searchTransactionPortions(null, null, null, null, entryId)).map(x=>x.faccount_id)) === req.authenticatedUser.id){
+        await journalEntryModel.deleteJournalEntry(replacedJournalEntryId);
+        res.redirect("my-journal-entries");
+        return;
+    } else {
+        res.status(400).send("You are trying to delete a deleted journal entry");
+        return;
+    }
+}
 async function updateStockPage(req, res){
     let stockAccountId = parseInt(req.params.account_id);
     if(isNaN(stockAccountId)){
@@ -363,4 +378,4 @@ async function handleQuickChargeForm(req, res){
         "rowCount": 3
     })
 }
-export default {myJournalEntriesPage, addJournalEntryPage, handleJournalEntryForm, updateStockPage, journalEntrySearch, quickChargePage, handleQuickChargeForm, editJournalEntryPage}
+export default {myJournalEntriesPage, addJournalEntryPage, handleJournalEntryForm, updateStockPage, journalEntrySearch, quickChargePage, handleQuickChargeForm, editJournalEntryPage, handleDeleteEntryForm}
