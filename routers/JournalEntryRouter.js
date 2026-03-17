@@ -8,6 +8,7 @@ router.post('/add-journal-entry', authenticationBarrier, finalNonEmptyWins, jour
 router.post('/add-journal-entry-submit', authenticationBarrier, journalEntryController.handleJournalEntryForm);
 router.post('/add-journal-entry-submit-mobile', authenticationBarrier, (req, res, next) => {req.mobile = true; next();}, journalEntryController.handleJournalEntryForm);
 router.get("/edit-journal-entry/:id", authenticationBarrier, journalEntryController.editJournalEntryPage)
+router.delete("/delete-entry/:id", authenticationBarrier, journalEntryController.handleDeleteEntryForm)
 router.get("/update-stock-account/:account_id", authenticationBarrier, journalEntryController.updateStockPage)
 router.get('/my-journal-entries', authenticationBarrier, journalEntryController.myJournalEntriesPage);
 router.post("/journal-entries-search", authenticationBarrier, journalEntryController.journalEntrySearch);
