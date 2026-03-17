@@ -19,7 +19,7 @@ async function journalEntrySearch(req, res){
     }
     let start_date = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.exec(req.body.start_date)?.[0] ?? null;
     let end_date = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.exec(req.body.end_date)?.[0] ?? null;
-    let portions = await journalEntryModel.searchTransactionPortions(req.authenticatedUser.id, fAccount?.id ?? null, start_date, end_date);
+    let portions = await journalEntryModel.searchTransactionPortions(req.authenticatedUser.id, fAccount?.id ?? null, start_date, end_date, null);
     res.render("journal-entries-list", {
         pageTitle: "Journal Entries" +
             (fAccount === null ? "" : " For '" + fAccount.nickname + "'") +
