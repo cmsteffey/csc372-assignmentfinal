@@ -84,7 +84,7 @@
                         </tr>
                         <div popover id="delete-confirm-<%=portion.id%>" style="">
                             <h3>Delete "<%=portion.name%>"?</h3>
-                            <form method="GET" action="/delete-entry/<%=portion.id%>"><button style="background-color: #FF8888">Delete</button></form>
+                            <form method="DELETE" action="/delete-entry/<%=portion.id%>"><button style="background-color: #FF8888">Delete</button></form>
                             <button popovertargetaction="hide" popovertarget="delete-confirm-<%=portion.id%>">Cancel</button>
                         </div>
                     <% } %>
