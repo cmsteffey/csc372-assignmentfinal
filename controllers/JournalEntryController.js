@@ -199,7 +199,7 @@ async function handleDeleteEntryForm(req, res){
         return;
     }
     if(await fAccountModel.getOwnerForAccounts((await journalEntryModel.searchTransactionPortions(null, null, null, null, entryId)).map(x=>x.faccount_id)) === req.authenticatedUser.id){
-        await journalEntryModel.deleteJournalEntry(replacedJournalEntryId);
+        await journalEntryModel.deleteJournalEntry(entryId);
         res.redirect("my-journal-entries");
         return;
     } else {
