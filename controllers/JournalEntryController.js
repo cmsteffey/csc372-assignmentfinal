@@ -200,7 +200,7 @@ async function handleDeleteEntryForm(req, res){
     }
     if(await fAccountModel.getOwnerForAccounts((await journalEntryModel.searchTransactionPortions(null, null, null, null, entryId)).map(x=>x.faccount_id)) === req.authenticatedUser.id){
         await journalEntryModel.deleteJournalEntry(entryId);
-        res.redirect("my-journal-entries");
+        res.redirect("/my-journal-entries");
         return;
     } else {
         res.status(400).send("You are trying to delete a deleted journal entry");
