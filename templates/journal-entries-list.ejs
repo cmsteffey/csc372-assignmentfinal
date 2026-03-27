@@ -82,11 +82,6 @@
                             <td><form method="GET" action="/edit-journal-entry/<%=portion.id%>"><button style="text-align: center">Edit</button></form></td>
                             <td><button style="text-align: center; color: #992222" popovertarget="delete-confirm-<%=portion.id%>">Delete</button></td>
                         </tr>
-                        <div popover id="delete-confirm-<%=portion.id%>" style="">
-                            <h3>Delete "<%=portion.name%>"?</h3>
-                            <form method="POST" action="/delete-journal-entry/<%=portion.id%>"><button style="background-color: #FF8888">Delete</button></form>
-                            <button popovertargetaction="hide" popovertarget="delete-confirm-<%=portion.id%>">Cancel</button>
-                        </div>
                     <% } %>
                     <tr>
                         <td class="mobile-elidable"><%= portion.faccount_category_string %></td>
@@ -118,6 +113,13 @@
 
         </tbody>
     </table>
+    <% for(let i = 0; i < portions.length; ++i){ %>
+        <div popover id="delete-confirm-<%=portions[i].id%>">
+            <h3>Delete "<%=portions[i].name%>"?</h3>
+            <form method="POST" action="/delete-journal-entry/<%=portions[i].id%>" style="display: inline-block"><button style="background-color: #FF8888">Delete</button></form>
+            <button popovertargetaction="hide" popovertarget="delete-confirm-<%=portions[i].id%>">Cancel</button>
+        </div>
+    <% } %>
 </main>
 
 </body>
