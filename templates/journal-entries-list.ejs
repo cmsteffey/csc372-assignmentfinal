@@ -40,8 +40,8 @@
             <col style="width: 13ch" class="mobile-elidable">
             <col style="width: <%=Math.max(7, portions.map(x=>x.faccount_nickname).reduce((acc, x) => x.length > acc ? x.length : acc, 0))%>.5ch">
             <col>
-            <col style="width: <%=Math.max(5, portions.reduce((acc, x) => x.amount > acc ? x.amount : acc, 0).toString().length + 2)%>.5ch">
-            <col style="width: <%=Math.max(6, Math.abs(portions.reduce((acc, x) => x.amount < acc ? x.amount : acc, 0)).toString().length + 2)%>.5ch">
+            <col style="width: <%=Math.max(5 /*len("Debit")*/, portions.filter(x=>x.amount > 0).reduce((acc, x) => acc + x.amount, 0).toString().length + 2)%>.5ch">
+            <col style="width: <%=Math.max(6 /*len("Credit")*/, Math.abs(portions.filter(x=>x.amount < 0).reduce((acc, x) => acc + x.amount, 0)).toString().length + 2)%>.5ch">
         </colgroup>
         <thead>
             <tr>
