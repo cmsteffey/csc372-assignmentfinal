@@ -121,6 +121,7 @@ async function handleJournalEntryForm(req,res){
                     rowCount: ("body" in req && "rowCount" in req.body) ? (parseInt(req.body.rowCount) || 2) : 2,
                     accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
                 });
+                return;
             }
             portions[i][req.body["d/c_" + i] === 'd' ? "debit" : "credit"] = amount;
         } else {
