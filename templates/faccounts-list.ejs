@@ -29,7 +29,7 @@
             <tr>
                 <th style="width: 14ch;" class="mobile-elidable">Account Type</th>
                 <th>Account Name</th>
-                <th style="width: <%=Math.max(7, accounts.map(x=>Math.abs(x.balance)).reduce((acc, x) => x > acc ? x : acc, 0).toString().length + 2)%>ch">Balance</th>
+                <th style="width: <%=Math.max(7, accounts.concat(Object.values(categoryTotals)).map(x=>Math.max(Math.floor(Math.log10(Math.abs(x.balance))), 3) + (x.balance < 0 ? 4 : 2)).reduce((acc, x) => x > acc ? x : acc, 0))%>ch">Balance</th>
             </tr>
         </thead>
         <tbody>
