@@ -40,8 +40,8 @@
             <col style="width: 13ch" class="mobile-elidable">
             <col style="width: <%=Math.max(7, portions.map(x=>x.faccount_nickname).reduce((acc, x) => x.length > acc ? x.length : acc, 0))%>.5ch">
             <col>
-            <col style="width: <%=Math.max(5, portions.reduce((acc, x) => x.amount > acc ? x.amount : acc, 0).toString().length + 2)%>.5ch">
-            <col style="width: <%=Math.max(6, Math.abs(portions.reduce((acc, x) => x.amount < acc ? x.amount : acc, 0)).toString().length + 2)%>.5ch">
+            <col style="width: <%=Math.max(5 /*len("Debit")*/, portions.filter(x=>x.amount > 0).reduce((acc, x) => acc + x.amount, 0).toString().length + 2)%>.5ch">
+            <col style="width: <%=Math.max(6 /*len("Credit")*/, Math.abs(portions.filter(x=>x.amount < 0).reduce((acc, x) => acc + x.amount, 0)).toString().length + 2)%>.5ch">
         </colgroup>
         <thead>
             <tr>
@@ -73,10 +73,14 @@
                     <% var portion = portions[i] %>
                     <% if(i === 0 || portions[i].entry_id !== portions[i - 1].entry_id) { %>
                         <tr class="mobile-elidable section-name<% if(portion.flagged) { %> flagged<% } %>">
-                            <td colspan="5"><%= portion.name %><% if(portion.for_date) { %><br><%=portion.for_date%><% } %></td>
+                            <td colspan="3"><%= portion.name %><% if(portion.for_date) { %><br><%=portion.for_date%><% } %></td>
+                            <td><form method="GET" action="/edit-journal-entry/<%=portion.id%>"><button>Edit</button></form></td>
+                            <td><button style="text-align: center; color: #992222" popovertarget="delete-confirm-<%=portion.id%>">Delete</button></td>
                         </tr>
                         <tr class="mobile-replacement section-name<% if(portion.flagged) { %> flagged<% } %>">
-                            <td colspan="4"><%= portion.name %><% if(portion.for_date) { %><br><%=portion.for_date%><% } %></td>
+                            <td colspan="2"><%= portion.name %><% if(portion.for_date) { %><br><%=portion.for_date%><% } %></td>
+                            <td><form method="GET" action="/edit-journal-entry/<%=portion.id%>"><button style="text-align: center">Edit</button></form></td>
+                            <td><button style="text-align: center; color: #992222" popovertarget="delete-confirm-<%=portion.id%>">Delete</button></td>
                         </tr>
                     <% } %>
                     <tr>
@@ -109,6 +113,13 @@
 
         </tbody>
     </table>
+    <% for(let i = 0; i < portions.length; ++i){ %>
+        <div popover id="delete-confirm-<%=portions[i].id%>">
+            <h3>Delete "<%=portions[i].name%>"?</h3>
+            <form method="POST" action="/delete-journal-entry/<%=portions[i].id%>" style="display: inline-block"><button style="background-color: #FF8888">Delete</button></form>
+            <button popovertargetaction="hide" popovertarget="delete-confirm-<%=portions[i].id%>">Cancel</button>
+        </div>
+    <% } %>
 </main>
 
 </body>

@@ -13,9 +13,9 @@
 <main>
     <h2>Credit Card Registration</h2>
     <form action="/register-cc" method="post" enctype="multipart/form-data">
-        <label>Liability account: <%- include('partials/accountSelector', {category: 'Liability', name: 'faccount_id'}) %></label><br>
+        <label>Liability account: <%- include('partials/accountSelector', {categories: ['Liability'], name: 'faccount_id'}) %></label><br>
         <label>Cashback percentage: <input type="text" name="cashback"></label><br>
-        <label>Cashback account: <%- include('partials/accountSelector', {category: 'Asset', name: 'cb_account_id'}) %></label><br>
+        <label>Cashback account: <%- include('partials/accountSelector', {categories: ['Asset'], name: 'cb_account_id'}) %></label><br>
         <button>Register</button>
     </form>
 </main>

@@ -12,19 +12,24 @@ async function myJournalEntriesPage(req,res){
 }
 async function journalEntrySearch(req, res){
     let fAccountId = parseInt(req.body.account_id)
-    let fAccount = isNaN(fAccountId) ? null : await fAccountModel.getFAccountById(fAccountId);
-    if(fAccount !== null && fAccount.owner !== req.authenticatedUser.id){
+    let fAccount = isNaN(fAccountId) ? undefined : await fAccountModel.getFAccountById(fAccountId);
+    if(fAccount !== undefined && fAccount.owner !== req.authenticatedUser.id){
         await myJournalEntriesPage(req,res);
         return;
     }
-    let start_date = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.exec(req.body.start_date)?.[0] ?? null;
-    let end_date = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.exec(req.body.end_date)?.[0] ?? null;
-    let portions = await journalEntryModel.searchTransactionPortions(req.authenticatedUser.id, fAccount?.id ?? null, start_date, end_date);
+    let start_date = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.exec(req.body.start_date)?.[0];
+    let end_date = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.exec(req.body.end_date)?.[0];
+    let portions = await journalEntryModel.searchTransactionPortions({
+        userId: req.authenticatedUser.id,
+        fAccountId: fAccount?.id,
+        start_date,
+        end_date,
+    });
     res.render("journal-entries-list", {
         pageTitle: "Journal Entries" +
-            (fAccount === null ? "" : " For '" + fAccount.nickname + "'") +
-            (start_date === null ? "" : " After " + start_date) +
-            (end_date === null ? "" : " Up To " + end_date),
+            (fAccount === undefined ? "" : " For '" + fAccount.nickname + "'") +
+            (start_date === undefined ? "" : " After " + start_date) +
+            (end_date === undefined ? "" : " Up To " + end_date),
         portions,
         accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
         prefill: req.body ?? {},
@@ -35,6 +40,35 @@ async function addJournalEntryPage(req,res){
     res.render('add-journal-entry', {
         prefill: req.body ?? {},
         rowCount: ("body" in req && "rowCount" in req.body) ? (parseInt(req.body.rowCount) || 2) + 1 : 2,
+        accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
+    })
+}
+async function editJournalEntryPage(req,res){
+    if(isNaN(parseInt(req.params.id))){
+        return res.redirect("/my-journal-entries");
+    }
+    let portions = await journalEntryModel.searchTransactionPortions({
+        userId: req.authenticatedUser.id,
+        journal_entry_id: req.params.id
+    });
+    if(portions.length === 0){
+        return res.redirect("/my-journal-entries");
+    }
+    let prefill = {}
+    for(let i = 0; i < portions.length; ++i){
+        prefill["d/c_" + i] = portions[i].amount < 0 ? "c" : "d";
+        prefill["amount_" + i] = prefill[(portions[i].amount < 0 ? "credit" : "debit") + "_" + i] = Math.abs(portions[i].amount).toString().slice(0, -2) + "." + Math.abs(portions[i].amount).toString().padStart(2, '0').slice(-2);
+        prefill["m_description_" + i] = prefill["description_" + i] = portions[i].description;
+        prefill["m_account_id_" + i] = prefill["account_id_" + i] = portions[i].faccount_id.toString();
+    }
+    prefill["journal_entry_name"] = portions[0].name;
+    prefill["flagged"] = portions[0].flagged ? "" : undefined;
+    prefill["journal_entry_date"] = portions[0].for_date;
+    prefill["replace_entry_id"] = req.params.id;
+    prefill["page_title"] = "Edit '" + portions[0].name + "'"
+    res.render('add-journal-entry', {
+        rowCount: portions.length,
+        prefill,
         accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
     })
 }
@@ -94,6 +128,7 @@ async function handleJournalEntryForm(req,res){
                     rowCount: ("body" in req && "rowCount" in req.body) ? (parseInt(req.body.rowCount) || 2) : 2,
                     accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
                 });
+                return;
             }
             portions[i][req.body["d/c_" + i] === 'd' ? "debit" : "credit"] = amount;
         } else {
@@ -146,10 +181,39 @@ async function handleJournalEntryForm(req,res){
         });
         return;
     }
+    let replacedJournalEntryId = parseInt(req.body.replace_entry_id);
+    if(!isNaN(replacedJournalEntryId)){
+        if(await fAccountModel.getOwnerForAccounts((await journalEntryModel.searchTransactionPortions({journal_entry_id: replacedJournalEntryId})).map(x=>x.faccount_id)) === req.authenticatedUser.id){
+            await journalEntryModel.deleteJournalEntry(replacedJournalEntryId);
+        } else {
+            res.render('add-journal-entry', {
+                error: "Error: You are trying to edit a deleted journal entry",
+                prefill: req.body,
+                rowCount: ("body" in req && "rowCount" in req.body) ? (parseInt(req.body.rowCount) || 2) : 2,
+                accounts: await fAccountModel.getFAccountsForUser(req.authenticatedUser.id),
+            });
+            return;
+        }
+    }
     let journalEntryId = await journalEntryModel.createJournalEntry(req.body.journal_entry_name, req.body.journal_entry_date, typeof req.body.flagged === "string");
     await journalEntryModel.fillJournalEntry(journalEntryId, portions);
     res.redirect('/my-journal-entries');
 
+}
+async function handleDeleteEntryForm(req, res){
+    let entryId;
+    if(isNaN((entryId = parseInt(req.params.id)))){
+        res.status(400).send("Non-numeric entry id");
+        return;
+    }
+    if(await fAccountModel.getOwnerForAccounts((await journalEntryModel.searchTransactionPortions({journal_entry_id: entryId})).map(x=>x.faccount_id)) === req.authenticatedUser.id){
+        await journalEntryModel.deleteJournalEntry(entryId);
+        res.redirect("/my-journal-entries");
+        return;
+    } else {
+        res.status(400).send("You are trying to delete a deleted journal entry");
+        return;
+    }
 }
 async function updateStockPage(req, res){
     let stockAccountId = parseInt(req.params.account_id);
@@ -322,4 +386,4 @@ async function handleQuickChargeForm(req, res){
         "rowCount": 3
     })
 }
-export default {myJournalEntriesPage, addJournalEntryPage, handleJournalEntryForm, updateStockPage, journalEntrySearch, quickChargePage, handleQuickChargeForm}
+export default {myJournalEntriesPage, addJournalEntryPage, handleJournalEntryForm, updateStockPage, journalEntrySearch, quickChargePage, handleQuickChargeForm, editJournalEntryPage, handleDeleteEntryForm}
