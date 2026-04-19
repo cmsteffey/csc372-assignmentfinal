@@ -1,19 +1,32 @@
 import pool from "./Pool.js"
 import fAccountType from "./FAccountType.js";
 async function getTransactionPortionsForUser(userId){
-    return (await pool.query(
-        "SELECT journal_entry.*, financial_account.nickname as faccount_nickname, financial_account.category as faccount_category, transaction_portion.amount as amount, transaction_portion.description as description from journal_entry join transaction_portion on transaction_portion.journal_entry = journal_entry.id join financial_account on transaction_portion.financial_account = financial_account.id where financial_account.owner = $1 order by journal_entry.for_date DESC NULLS FIRST, transaction_portion.journal_entry, financial_account.category, financial_account.nickname", [userId])).rows.map(x=>({...x, faccount_category_string: fAccountType[x.faccount_category].name}));
+    return await searchTransactionPortions({
+        userId,
+        desc: true
+    })
 }
-async function searchTransactionPortions(userId, fAccountId, start_date, end_date, journal_entry_id){
+/*
+    Options:
+    {
+      userId: Number,
+      fAccountId: Number,
+      start_date: String (YYYY-MM-DD),
+      end_date: String (YYYY-MM-DD),
+      journal_entry_id: Number,
+      desc: boolean
+    }
+ */
+async function searchTransactionPortions(options){
     let paramNum = 0;
     return (await pool.query(
         "SELECT journal_entry.*, financial_account.nickname as faccount_nickname, financial_account.category as faccount_category, financial_account.id as faccount_id, transaction_portion.amount as amount, transaction_portion.description as description from journal_entry join transaction_portion on transaction_portion.journal_entry = journal_entry.id join financial_account on transaction_portion.financial_account = financial_account.id where TRUE" +
-        (userId !== null ? " AND financial_account.owner = $" + ++paramNum : "") +
-        (fAccountId !== null ? " AND financial_account.id = $" + ++paramNum : "") +
-        (start_date !== null ? " AND journal_entry.for_date >= $" + ++paramNum : "") +
-        (end_date !== null ? " AND journal_entry.for_date <= $" + ++paramNum : "") +
-        (journal_entry_id !== null ? " AND journal_entry.id = $" + ++paramNum : "") +
-        " order by journal_entry.for_date NULLS FIRST, transaction_portion.journal_entry, financial_account.category, financial_account.nickname", [userId, fAccountId,  start_date, end_date, journal_entry_id].filter(x=>x !== null)
+        (options.userId !== undefined ? " AND financial_account.owner = $" + ++paramNum : "") +
+        (options.fAccountId !== undefined ? " AND financial_account.id = $" + ++paramNum : "") +
+        (options.start_date !== undefined ? " AND journal_entry.for_date >= $" + ++paramNum : "") +
+        (options.end_date !== undefined ? " AND journal_entry.for_date <= $" + ++paramNum : "") +
+        (options.journal_entry_id !== undefined ? " AND journal_entry.id = $" + ++paramNum : "") +
+        " order by journal_entry.for_date " + (options.desc ? "DESC " : "") + "NULLS FIRST, transaction_portion.journal_entry, financial_account.category, financial_account.nickname", [options.userId, options.fAccountId,  options.start_date, options.end_date, options.journal_entry_id].filter(x=>x !== undefined)
     )).rows.map(x=>({...x, faccount_category_string: fAccountType[x.faccount_category].name}));
 }
 async function createJournalEntry(name, date, flagged){
