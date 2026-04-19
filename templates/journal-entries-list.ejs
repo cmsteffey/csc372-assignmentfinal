@@ -71,7 +71,7 @@
                 <% var totalDebit, totalCredit, total; totalDebit = 0; totalCredit = 0; total = 0; %>
                 <% for(let i = 0; i < portions.length; ++i) { %>
                     <% var portion = portions[i] %>
-                    <% if(i === 0 || portions[i].id !== portions[i - 1].id) { %>
+                    <% if(i === 0 || portions[i].entry_id !== portions[i - 1].entry_id) { %>
                         <tr class="mobile-elidable section-name<% if(portion.flagged) { %> flagged<% } %>">
                             <td colspan="3"><%= portion.name %><% if(portion.for_date) { %><br><%=portion.for_date%><% } %></td>
                             <td><form method="GET" action="/edit-journal-entry/<%=portion.id%>"><button>Edit</button></form></td>
