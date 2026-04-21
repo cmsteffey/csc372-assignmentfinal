@@ -20,7 +20,7 @@ async function getTransactionPortionsForUser(userId){
 async function searchTransactionPortions(options){
     let paramNum = 0;
     return (await pool.query(
-        "SELECT journal_entry.*, financial_account.nickname as faccount_nickname, financial_account.category as faccount_category, financial_account.id as faccount_id, transaction_portion.amount as amount, transaction_portion.description as description from journal_entry join transaction_portion on transaction_portion.journal_entry = journal_entry.id join financial_account on transaction_portion.financial_account = financial_account.id where TRUE" +
+        "SELECT journal_entry.*, financial_account.nickname as faccount_nickname, financial_account.category as faccount_category, financial_account.id as faccount_id, transaction_portion.amount as amount, transaction_portion.description as description, transaction_portion.journal_entry as entry_id, transaction_portion.id as id from journal_entry join transaction_portion on transaction_portion.journal_entry = journal_entry.id join financial_account on transaction_portion.financial_account = financial_account.id where TRUE" +
         (options.userId !== undefined ? " AND financial_account.owner = $" + ++paramNum : "") +
         (options.fAccountId !== undefined ? " AND financial_account.id = $" + ++paramNum : "") +
         (options.start_date !== undefined ? " AND journal_entry.for_date >= $" + ++paramNum : "") +
