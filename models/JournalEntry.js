@@ -14,7 +14,8 @@ async function getTransactionPortionsForUser(userId){
       start_date: String (YYYY-MM-DD),
       end_date: String (YYYY-MM-DD),
       journal_entry_id: Number,
-      desc: boolean
+      desc: boolean,
+      categories: Array[Number]
     }
  */
 async function searchTransactionPortions(options){
@@ -26,7 +27,8 @@ async function searchTransactionPortions(options){
         (options.start_date !== undefined ? " AND journal_entry.for_date >= $" + ++paramNum : "") +
         (options.end_date !== undefined ? " AND journal_entry.for_date <= $" + ++paramNum : "") +
         (options.journal_entry_id !== undefined ? " AND journal_entry.id = $" + ++paramNum : "") +
-        " order by journal_entry.for_date " + (options.desc ? "DESC " : "") + "NULLS FIRST, transaction_portion.journal_entry, financial_account.category, financial_account.nickname", [options.userId, options.fAccountId,  options.start_date, options.end_date, options.journal_entry_id].filter(x=>x !== undefined)
+        (options.categories !== undefined ? " AND financial_account.category IN (" + [...Array(options.categories.length).keys()].map(_=>"$" + ++paramNum).join(",") + ")": "") +
+        " order by journal_entry.for_date " + (options.desc ? "DESC " : "") + "NULLS FIRST, transaction_portion.journal_entry, financial_account.category, financial_account.nickname", [options.userId, options.fAccountId,  options.start_date, options.end_date, options.journal_entry_id, ...(options.categories ?? [])].filter(x=>x !== undefined)
     )).rows.map(x=>({...x, faccount_category_string: fAccountType[x.faccount_category].name}));
 }
 async function createJournalEntry(name, date, flagged){

@@ -5,6 +5,7 @@
         <!--a href="/about">About</a-->
         <a href="/my-accounts">My Accounts</a>
         <a href="/my-journal-entries">My Journal Entries</a>
+        <a href="/reports">My Reports</a>
         <div class="header-account">
             <% if(authenticatedUser) {%>
                 <a class="account-link" href="/me"><%= authenticatedUser.username %></a>
@@ -25,6 +26,7 @@
     <a href="/">Home</a><br>
     <a href="/my-accounts">My Accounts</a><br>
     <a href="/my-journal-entries">My Journal Entries</a><br>
+    <a href="/reports">My Reports</a>
     <div>
         <% if(authenticatedUser) {%>
             <a class="account-link" href="/me"><%= authenticatedUser.username %></a>
