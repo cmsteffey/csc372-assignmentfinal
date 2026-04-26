@@ -63,7 +63,7 @@
                             <td class="mobile-elidable"><strong><%= account.categoryString %></strong></td>
                             <td><strong><span class="mobile-replacement"><%= account.categoryString %> </span>Category Total</strong></td>
                             <% var categoryTotal = categoryTotals[account.categoryString.toLowerCase()]%>
-                            <td><strong<% if(categoryTotal < 0) { %> class="negative"<% } %>><%=categoryTotal < 0 ? "(" : ""%>$<%= Math.floor(Math.abs(categoryTotal) / 100) %>.<%= (Math.abs(categoryTotal) % 100).toString().padStart(2, '0') %><%=categoryTotal < 0 ? ")" : ""%></strong></td>
+                            <td style="text-align: right"><strong<% if(categoryTotal < 0) { %> class="negative"<% } %>><%=categoryTotal < 0 ? "(" : ""%>$<%= Math.floor(Math.abs(categoryTotal) / 100) %>.<%= (Math.abs(categoryTotal) % 100).toString().padStart(2, '0') %><%=categoryTotal < 0 ? ")" : ""%></strong></td>
                         </tr>
                     <% } %>
                 <% } %>
