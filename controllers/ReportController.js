@@ -172,7 +172,7 @@ async function handleAparReport(req, res){
                   payables.map(x=>({...x, categoryString: "Payable", category: 1, nickname: x.name,balance:x.amount}))
         ),
         categoryTotals: {receivable: receivables.reduce((acc, x) => acc + x.amount, 0),
-            payable: payables.reduce((acc, x) => acc + x.amount, 0)}
+            payable: payables.reduce((acc, x) => acc + -x.amount, 0)}
     })
 }
 export default {handleReportRequest, handleExpenseRequest, handleRevenueRequest, handleAparReport}
