@@ -31,6 +31,7 @@ async function handleReportRequest(req, res) {
                 report: await generateExpensePie(req.authenticatedUser.id, req.params.param),
                 title: "Expense Breakdown For " + req.params.param,
             })
+
         default:
             return res.redirect('/');
     }
@@ -162,4 +163,16 @@ async function handleRevenueRequest(req, res) {
         }),
     })
 }
-export default {handleReportRequest, handleExpenseRequest, handleRevenueRequest}
+async function handleAparReport(req, res){
+    let payables = await journalEntryModel.getPayablesForUser(req.authenticatedUser.id);
+    let receivables = await journalEntryModel.getReceivablesForUser(req.authenticatedUser.id);
+    return res.render('faccounts-list', {
+        pageTitle: "AP/AR Report",
+        accounts: receivables.map(x=>({...x,categoryString: "Receivable",category: 0,nickname:x.name, balance:x.amount})).concat(
+                  payables.map(x=>({...x, categoryString: "Payable", category: 1, nickname: x.name,balance:x.amount}))
+        ),
+        categoryTotals: {receivable: receivables.reduce((acc, x) => acc + x.amount, 0),
+            payable: payables.reduce((acc, x) => acc + x.amount, 0)}
+    })
+}
+export default {handleReportRequest, handleExpenseRequest, handleRevenueRequest, handleAparReport}
