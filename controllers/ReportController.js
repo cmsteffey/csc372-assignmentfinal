@@ -169,7 +169,7 @@ async function handleAparReport(req, res){
     return res.render('faccounts-list', {
         pageTitle: "AP/AR Report",
         accounts: receivables.map(x=>({...x,categoryString: "Receivable",category: 0,nickname:x.name, balance:x.amount})).concat(
-                  payables.map(x=>({...x, categoryString: "Payable", category: 1, nickname: x.name,balance:x.amount}))
+                  payables.map(x=>({...x, categoryString: "Payable", category: 1, nickname: x.name,balance:-x.amount}))
         ),
         categoryTotals: {receivable: receivables.reduce((acc, x) => acc + x.amount, 0),
             payable: payables.reduce((acc, x) => acc + -x.amount, 0)}
