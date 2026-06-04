@@ -362,7 +362,8 @@ async function handleQuickChargeForm(req, res){
     console.log(cashbackAmt);
     res.render('add-journal-entry', {
         prefill: {
-            "journal_entry_name": "QC",
+            "journal_entry_name": req.body?.name ?? "",
+            "journal_entry_date": req.body?.date ?? "",
             "account_id_0": expenseAccountId.toString(),
             "account_id_1": ccAccountId.toString(),
             "account_id_2": cashbackAccount.toString(),
