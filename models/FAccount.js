@@ -17,12 +17,26 @@ async function getFAccounts(options){
     if(options.userId)
         fields.push(options.userId);
     return (await pool.query(
-        "SELECT financial_account.*, MIN(credit_card_info.default_cashback_pct) as default_cashback_pct, MIN(credit_card_info.default_cashback_account) as default_cashback_account, MIN(stock_financial_account.shares) as shares, MIN(stock_financial_account.ticker) as ticker, COALESCE(SUM(transaction_portion.amount), 0) as balance FROM financial_account left join stock_financial_account on stock_financial_account.financial_account = financial_account.id left join transaction_portion on transaction_portion.financial_account = financial_account.id left join credit_card_info on financial_account.id = credit_card_info.financial_account " + (options.userId ? "WHERE owner = $1 " : "") + (options.accountId ? "WHERE financial_account.id = " + (options.userId ? "$2 " : "$1 "): "") + "group by financial_account.id order by category, LOWER(nickname)"
+        "SELECT financial_account.*, ANY_VALUE(credit_card_info.default_cashback_pct) as default_cashback_pct, ANY_VALUE(credit_card_info.default_cashback_account) as default_cashback_account, ANY_VALUE(stock_financial_account.shares) as shares, ANY_VALUE(stock_financial_account.ticker) as ticker, COALESCE(SUM(transaction_portion.amount), 0)::integer as balance FROM financial_account left join stock_financial_account on stock_financial_account.financial_account = financial_account.id left join transaction_portion on transaction_portion.financial_account = financial_account.id left join credit_card_info on financial_account.id = credit_card_info.financial_account " + (options.userId ? "WHERE owner = $1 " : "") + (options.accountId ? "WHERE financial_account.id = " + (options.userId ? "$2 " : "$1 "): "") + "group by financial_account.id order by category, LOWER(nickname)"
         , fields)).rows.map(x=>({...x, balance: fAccountType[x.category].debitIncrease ? x.balance : -x.balance})).map(loadCategoryString)
+}
+async function getFAccountSkeletons(options){
+    options ??= {};
+    if(options.accountId)
+        fields.push(options.accountId);
+    if(options.userId)
+        fields.push(options.userId);
+    let fieldNum = 0;
+    return (await pool.query(
+        "SELECT * from financial_account where TRUE" +
+        (options.accountId ? " AND financial_account.id = $" + ++fieldNum : "") +
+        (options.userId ? " AND financial_account.owner = $" + ++fieldNum : "") +
+        " order by financial_account.category, LOWER(financial_account.nickname)"
+    )).rows
 }
 async function getCategoryTotals(userId){
     //Query returns [{category: number, total: number}], so beginning portion is filling in default 0s to be overwritten by results
-    return [...Array(fAccountType.length).keys()].map(x=>({category: x, total: 0})).concat((await pool.query("SELECT financial_account.category, SUM(transaction_portion.amount) as total from transaction_portion join financial_account on transaction_portion.financial_account = financial_account.id where financial_account.owner = $1 group by financial_account.category ", [userId])).rows).reduce((acc, x)=>({...acc, [fAccountType[x.category].name.toLowerCase()]: fAccountType[x.category].debitIncrease ? x.total : -x.total}), {})
+    return [...Array(fAccountType.length).keys()].map(x=>({category: x, total: 0})).concat((await pool.query("SELECT financial_account.category, SUM(transaction_portion.amount)::integer as total from transaction_portion join financial_account on transaction_portion.financial_account = financial_account.id where financial_account.owner = $1 group by financial_account.category ", [userId])).rows).reduce((acc, x)=>({...acc, [fAccountType[x.category].name.toLowerCase()]: fAccountType[x.category].debitIncrease ? x.total : -x.total}), {})
 }
 async function addFAccount(userId, category, nickname){
     return (await pool.query("INSERT INTO financial_account (owner, category, nickname) VALUES ($1, $2, $3) RETURNING id", [userId, category, nickname])).rows[0].id;
@@ -45,4 +59,4 @@ async function getOwnerForAccounts(accounts){
     let rows = (await pool.query("WITH query_accounts AS (SELECT UNNEST(ARRAY[" + Array.from(accounts.keys()).map(x=>"$" + (x + 1) + "::integer").join(',') + "]) as account_id) SELECT financial_account.owner FROM query_accounts LEFT JOIN financial_account on query_accounts.account_id = financial_account.id", accounts)).rows;
     return rows.every((x, i, a) => x.owner === a[0].owner) && rows.length === accounts.length ? rows[0].owner : null;
 }
-export default {getFAccountsForUser, addFAccount, getCategoryTotals, getOwnerForAccounts, getFAccountById, addStockFAccount};
+export default {getFAccountsForUser, addFAccount, getCategoryTotals, getOwnerForAccounts, getFAccountById, addStockFAccount, getFAccountSkeletons};

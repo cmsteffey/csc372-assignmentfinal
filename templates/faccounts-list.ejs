@@ -20,7 +20,7 @@
     <h1 class="print-visible center">Account report for account <%= authenticatedUser.username %></h1>
     <% var reportTime = new Date() %>
     <h4 class="print-visible center">Accurate as of <%= reportTime.getFullYear() + "/" + (reportTime.getMonth()+1) + "/" + reportTime.getDate() + " at " + reportTime.getHours() + ":" + reportTime.getMinutes() + ":" + reportTime.getSeconds()%></h4>
-    <% if (aleEquation ?? false) { %>
+    <% if (typeof aleEquation !== "undefined" && aleEquation) { %>
         <h2 style="width: max-content; margin: 0 auto;">$<%=categoryTotals.asset < 0 ? "-" : ""%><%= Math.floor(Math.abs(categoryTotals.asset) / 100) %>.<%= (Math.abs(categoryTotals.asset) % 100).toString().padStart(2, '0') %> = <%=categoryTotals.liability < 0 ? "-" : ""%>$<%= Math.floor(Math.abs(categoryTotals.liability) / 100) %>.<%= (Math.abs(categoryTotals.liability) % 100).toString().padStart(2, '0') %> <%= categoryTotals.equity + categoryTotals.revenue < categoryTotals.expense ? "-" : "+"%> $<%= Math.floor(Math.abs(categoryTotals.equity - categoryTotals.expense + categoryTotals.revenue) / 100) %>.<%= (Math.abs(categoryTotals.equity - categoryTotals.expense + categoryTotals.revenue) % 100).toString().padStart(2, '0') %></h2>
         <br>
     <% } %>
@@ -29,7 +29,7 @@
             <tr>
                 <th style="width: 14ch;" class="mobile-elidable">Account Type</th>
                 <th>Account Name</th>
-                <th style="width: <%=Math.max(7, accounts.map(x=>x.balance).concat(Object.values(categoryTotals)).map(x=>Math.max(Math.floor(Math.log10(Math.abs(x))) + 1, 3) + (x < 0 ? 4 : 2)).reduce((acc, x) => x > acc ? x : acc, 0))%>ch">Balance</th>
+                <th style="text-align: right; width: <%=Math.max(7, accounts.map(x=>x.balance).concat(Object.values(categoryTotals)).map(x=>Math.max(Math.floor(Math.log10(Math.abs(x))) + 1, 3) + (x < 0 ? 4 : 2)).reduce((acc, x) => x > acc ? x : acc, 0))%>ch">Balance</th>
             </tr>
         </thead>
         <tbody>
@@ -55,7 +55,7 @@
                     <% } %>
                     <tr>
                         <td class="mobile-elidable"><%= account.categoryString %></td>
-                        <td><%= account.ticker ? "STOCK: " + account.ticker : account.nickname %><%if (account.ticker) { %>, <%= account.shares %> share<%=account.shares !== 1 ? "s" : ""%> <a href="/update-stock-account/<%=account.id%>">(Update value)</a><%}%><% if (account.default_cashback_pct !== null) {%> <a href="/quick-charge/<%=account.id%>">&#9889; Quick Charge</a><% } %></td>
+                        <td><%= account.ticker ? "STOCK: " + account.ticker : account.nickname %><%if (account.ticker) { %>, <%= account.shares %> share<%=account.shares !== 1 ? "s" : ""%> <a href="/update-stock-account/<%=account.id%>">(Update value)</a><%}%><% if (account.default_cashback_pct !== null && account.default_cashback_pct !== undefined) {%> <a href="/quick-charge/<%=account.id%>">&#9889; Quick Charge</a><% } %></td>
                         <td style="text-align: right"<% if(account.balance < 0) { %> class="negative"<% } %>><%=account.balance < 0 ? "(" : ""%>$<%= Math.floor(Math.abs(account.balance) / 100) %>.<%= (Math.abs(account.balance) % 100).toString().padStart(2, '0')%><%=account.balance < 0 ? ")" : ""%></td>
                     </tr>
                     <% if (i === accounts.length - 1 || accounts[i].category !== accounts[i + 1].category) { %>

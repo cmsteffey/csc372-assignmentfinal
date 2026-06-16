@@ -22,7 +22,10 @@
     <div class="top-container">
         <h1><%= pageTitle ?? "Journal Entries" %></h1>
     </div>
-    <a href="/add-journal-entry">+ Add a new entry</a><br><br>
+    <a href="/add-journal-entry">+ Add a new entry</a><br>
+    <% for (let account of accounts.filter(x=>x.default_cashback_pct !== null && x.default_cashback_pct !== undefined)) { %>
+        <a href="/quick-charge/<%=account.id%>">&#9889; Quick Charge "<%= account.nickname %>"</a><br>
+    <% } %><br>
     <button popovertarget="entry-search">Search...</button>
     <div popover id="entry-search">
         <form action="/journal-entries-search" method="POST" enctype="multipart/form-data">
@@ -74,13 +77,13 @@
                     <% if(i === 0 || portions[i].entry_id !== portions[i - 1].entry_id) { %>
                         <tr class="mobile-elidable section-name<% if(portion.flagged) { %> flagged<% } %>">
                             <td colspan="3"><%= portion.name %><% if(portion.for_date) { %><br><%=portion.for_date%><% } %></td>
-                            <td><form method="GET" action="/edit-journal-entry/<%=portion.id%>"><button>Edit</button></form></td>
-                            <td><button style="text-align: center; color: #992222" popovertarget="delete-confirm-<%=portion.id%>">Delete</button></td>
+                            <td><form method="GET" action="/edit-journal-entry/<%=portion.entry_id%>"><button>Edit</button></form></td>
+                            <td><button style="text-align: center; color: #992222" popovertarget="delete-confirm-<%=portion.entry_id%>">Delete</button></td>
                         </tr>
                         <tr class="mobile-replacement section-name<% if(portion.flagged) { %> flagged<% } %>">
                             <td colspan="2"><%= portion.name %><% if(portion.for_date) { %><br><%=portion.for_date%><% } %></td>
-                            <td><form method="GET" action="/edit-journal-entry/<%=portion.id%>"><button style="text-align: center">Edit</button></form></td>
-                            <td><button style="text-align: center; color: #992222" popovertarget="delete-confirm-<%=portion.id%>">Delete</button></td>
+                            <td><form method="GET" action="/edit-journal-entry/<%=portion.entry_id%>"><button style="text-align: center">Edit</button></form></td>
+                            <td><button style="text-align: center; color: #992222" popovertarget="delete-confirm-<%=portion.entry_id%>">Delete</button></td>
                         </tr>
                     <% } %>
                     <tr>
@@ -114,10 +117,10 @@
         </tbody>
     </table>
     <% for(let i = 0; i < portions.length; ++i){ %>
-        <div popover id="delete-confirm-<%=portions[i].id%>">
+        <div popover id="delete-confirm-<%=portions[i].entry_id%>">
             <h3>Delete "<%=portions[i].name%>"?</h3>
-            <form method="POST" action="/delete-journal-entry/<%=portions[i].id%>" style="display: inline-block"><button style="background-color: #FF8888">Delete</button></form>
-            <button popovertargetaction="hide" popovertarget="delete-confirm-<%=portions[i].id%>">Cancel</button>
+            <form method="POST" action="/delete-journal-entry/<%=portions[i].entry_id%>" style="display: inline-block"><button style="background-color: #FF8888">Delete</button></form>
+            <button popovertargetaction="hide" popovertarget="delete-confirm-<%=portions[i].entry_id%>">Cancel</button>
         </div>
     <% } %>
 </main>
