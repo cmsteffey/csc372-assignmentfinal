@@ -81,7 +81,7 @@ async function generateExpensePie(userId, yearmonth) {
     }
     let amounts = Object.keys(amountsObject).map(x=>amountsObject[x]).toSorted((a, b) => b.amount - a.amount);
     let total = amounts.reduce((acc, x) => acc + x.amount, 0)
-    let angles = amounts.map((x, i) => (x.amount/total)*2*Math.PI).map((x, i, arr) => x + arr.reduce((acc, x, subi) => acc + (subi < i ? x : 0), 0));
+    let angles = amounts.map((x) => (x.amount/total)*2*Math.PI).map((x, i, arr) => x + arr.reduce((acc, x, subi) => acc + (subi < i ? x : 0), 0));
     let points = angles.map((x, i)=>{
         let dx = Math.sin(x);
         let dy = -Math.cos(x);
@@ -106,10 +106,7 @@ async function generateExpensePie(userId, yearmonth) {
     let colors = points.map(_=> "#" + (Math.floor(Math.random() * 256)).toString(16).padStart(2, '0')
             + (Math.floor(Math.random() * 256)).toString(16).padStart(2, '0')
             + (Math.floor(Math.random() * 256)).toString(16).padStart(2, '0'))
-    console.log(total)
-    console.log(angles)
-    console.log(amounts)
-    console.log(points)
+
 
     return {
         width: 1,
@@ -175,4 +172,77 @@ async function handleAparReport(req, res){
             payable: payables.reduce((acc, x) => acc + -x.amount, 0)}
     })
 }
-export default {handleReportRequest, handleExpenseRequest, handleRevenueRequest, handleAparReport}
+async function prepareReport(req, res) {
+    switch(req.params.reportName.toLowerCase()){
+        case "expense":
+            res.render('prepare-report', {
+                reportName: "expense",
+                reportFriendlyName: "Month Expenses",
+                fields: [
+                    {
+                        type: "month",
+                        name: "month",
+                        friendlyName: "Month"
+                    }
+                ]
+            })
+            break;
+        case "revenue":
+            res.render('prepare-report', {
+                reportName: "revenue",
+                reportFriendlyName: "Month Revenue",
+                fields: [
+                    {
+                        type: "month",
+                        name: "month",
+                        friendlyName: "Month"
+                    }
+                ]
+            })
+            break;
+        case "expensepie":
+            res.render('prepare-report', {
+                reportName: "ExpensePie",
+                reportFriendlyName: "Month Expense Pie",
+                fields: [
+                    {
+                        type: "month",
+                        name: "month",
+                        friendlyName: "Month"
+                    }
+                ]
+            })
+            break;
+        case "ine":
+            res.render('prepare-report', {
+                reportName: "InE",
+                reportFriendlyName: "Income and Expense",
+                fields: [
+                    {
+                        type: "number",
+                        name: "year",
+                        friendlyName: "Year"
+                    }
+                ]
+            })
+            break;
+        default:
+            res.redirect("/my-accounts");
+    }
+}
+async function handleRunReport(req, res) {
+    if(!req.params.reportName)
+        return res.status(400).send('Bad report name');
+    if(req.params.reportName.toLowerCase() === "ine")
+        return res.redirect(303, "/report/InE/" + req.body?.year)
+    if(req.params.reportName.toLowerCase() === "expense")
+        return res.redirect(303, "/expense/" + req.body?.month)
+    if(req.params.reportName.toLowerCase() === "revenue")
+        return res.redirect(303, "/revenue/" + req.body?.month)
+    if(req.params.reportName.toLowerCase() === "expensepie")
+        return res.redirect(303, "/report/ExpensePie/" + req.body?.month)
+}
+async function reportList(req, res){
+    return res.render('reports')
+}
+export default {handleReportRequest, handleExpenseRequest, handleRevenueRequest, handleAparReport, prepareReport, handleRunReport, reportList}
