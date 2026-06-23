@@ -71,7 +71,11 @@ async function handleAddFAccountForm(req, res){
         res.status(400).send("Nickname bad")
         return;
     }
-    await fAccountModel.addFAccount(req.authenticatedUser.id, categoryNumber, req.body.nickname.substring(0, 75));
+    if(typeof req.body.shortname !== 'string' || req.body.shortname.length > 12){
+        res.status(400).send("Shortname bad")
+        return;
+    }
+    await fAccountModel.addFAccount(req.authenticatedUser.id, categoryNumber, req.body.nickname.substring(0, 75), req.body.shortname === "" ? null : req.body.shortname);
     res.redirect('/my-accounts')
 
 }

@@ -41,7 +41,8 @@
     <table class="main-table">
         <colgroup>
             <col style="width: 13ch" class="mobile-elidable">
-            <col style="width: <%=Math.max(7, portions.map(x=>x.faccount_nickname).reduce((acc, x) => x.length > acc ? x.length : acc, 0))%>.5ch">
+            <col style="width: <%=Math.max(7, portions.map(x=>x.faccount_nickname).reduce((acc, x) => x.length > acc ? x.length : acc, 0))%>.5ch" class="mobile-elidable">
+            <col style="width: <%=Math.max(7, portions.map(x=>x.faccount_short_name ?? x.faccount_nickname).reduce((acc, x) => x.length > acc ? x.length : acc, 0))%>.5ch" class="mobile-replacement">
             <col>
             <col style="width: <%=Math.max(5 /*len("Debit")*/, portions.filter(x=>x.amount > 0).reduce((acc, x) => acc + x.amount, 0).toString().length + 2)%>.5ch">
             <col style="width: <%=Math.max(6 /*len("Credit")*/, Math.abs(portions.filter(x=>x.amount < 0).reduce((acc, x) => acc + x.amount, 0)).toString().length + 2)%>.5ch">
@@ -88,7 +89,7 @@
                     <% } %>
                     <tr>
                         <td class="mobile-elidable"><%= portion.faccount_category_string %></td>
-                        <td><%= portion.faccount_nickname %></td>
+                        <td><span class="mobile-elidable"><%= portion.faccount_nickname %></span><span class="mobile-replacement"><%= portion.faccount_short_name ?? portion.faccount_nickname %></span></td>
                         <td><%= portion.description.substring(0, 17) %><% if(portion.description.length > 17) { %><span class="mobile-replacement">...</span><span class="mobile-elidable"><%=portion.description.substring(17)%></span><% } %></td>
                         <td><% if (portion.amount > 0) { totalDebit += portion.amount; total += portion.amount; %>$<%=Math.floor(portion.amount / 100)%>.<%=(portion.amount % 100).toString().padStart(2, '0')%><% } %></td>
                         <td><% if (portion.amount < 0) { totalCredit -= portion.amount; total += portion.amount; %>$<%=Math.floor(-portion.amount / 100)%>.<%=(-portion.amount % 100).toString().padStart(2, '0')%><% } %></td>
