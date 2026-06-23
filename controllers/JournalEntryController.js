@@ -197,7 +197,7 @@ async function handleJournalEntryForm(req,res){
     }
     let journalEntryId = await journalEntryModel.createJournalEntry(req.body.journal_entry_name, req.body.journal_entry_date, typeof req.body.flagged === "string");
     await journalEntryModel.fillJournalEntry(journalEntryId, portions);
-    res.redirect('/my-journal-entries');
+    res.redirect('/my-journal-entries#je-' + journalEntryId);
 
 }
 async function handleDeleteEntryForm(req, res){
