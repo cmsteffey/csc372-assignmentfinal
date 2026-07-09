@@ -32,7 +32,7 @@ async function handleRegisterCcForm(req,res){
         await registerCcPage(req,res);
         return;
     }
-    let cbAccount = isNaN(parseInt(req.body.cb_account_id)) ? null : await fAccountModel.getFAccountById(parseInt(req.body.cb_acocunt_id));
+    let cbAccount = isNaN(parseInt(req.body.cb_account_id)) ? null : await fAccountModel.getFAccountById(parseInt(req.body.cb_account_id));
     if(cbAccount === null || cbAccount.owner !== req.authenticatedUser.id || cbAccount.category !== fAccountType.findIndex(x=>x.name === "Asset")){
         await registerCcPage(req,res);
         return;
