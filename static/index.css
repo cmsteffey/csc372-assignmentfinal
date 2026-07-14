@@ -8,6 +8,7 @@
     --theme-error-border: hsl(from var(--theme-error-color) h s calc(l * 0.5));
     --header-height: 7%;
     --header-gap: 0%;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 main {
     position: absolute;
