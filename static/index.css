@@ -9,6 +9,7 @@
     --header-height: 7%;
     --header-gap: 0%;
     padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-top: env(safe-area-inset-top, 0px);
 }
 main {
     position: absolute;

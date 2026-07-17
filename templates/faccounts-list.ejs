@@ -14,7 +14,7 @@
 <main>
 
     <div class="top-container">
-        <h1><%= typeof pageTitle !== "undefined" ? pageTitle : "Accounts" %>: <span id="pxval"></span><script>document.getElementById("pxval").innerText = document.querySelector(":root").computedStyleMap().get("padding-bottom").value + document.querySelector(":root").computedStyleMap().get("padding-bottom").unit</script></h1>
+        <h1><%= typeof pageTitle !== "undefined" ? pageTitle : "Accounts" %>: <span id="pxval"></span><script>document.getElementById("pxval").innerText = document.querySelector(":root").computedStyleMap().get("padding-bottom").value + document.querySelector(":root").computedStyleMap().get("padding-bottom").unit + " " + document.querySelector(":root").computedStyleMap().get("padding-top").value + document.querySelector(":root").computedStyleMap().get("padding-top").unit</script></h1>
         <button class="top-end" type="button" style="font-size: 1em" popovertarget="add-popover"><strong>Add...</strong></button>
     </div>
     <h1 class="print-visible center">Account report for account <%= authenticatedUser.username %></h1>
