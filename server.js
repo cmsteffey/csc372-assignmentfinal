@@ -36,7 +36,9 @@ app.set("view engine", "ejs");
 app.set("views", import.meta.dirname + "/templates");
 app.use("/static", express.static("static"));
 app.use((req, res, next) => {
-    if(req.url.startsWith("/spa?") && req.query.realpath){
+    if (req.url === "/spa"){
+        req.url = "/my-accounts";
+    } else if(req.url.startsWith("/spa?") && req.query.realpath){
         req.url = req.query.realpath;
     } else if (req.url.startsWith("/spaform/")) {
         req.url = req.url.substring(8);
