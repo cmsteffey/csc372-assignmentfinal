@@ -1,0 +1,36 @@
+﻿{
+  "start_url": "/spa",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "name": "EZAccounting",
+  "short_name": "EZA",
+  "shortcuts": [
+    {
+      "name": "My Accounts",
+      "short_name": "Accounts",
+      "description": "View accounts & balances",
+      "url": "/spa?realpath=/my-accounts",
+      "icons": [
+        {
+          "src": "/static/favicon.ico"
+        }
+      ]
+    },
+    {
+      "name": "My Entries",
+      "short_name": "Entries",
+      "description": "View journal entries",
+      "url": "/spa?realpath=/my-journal-entries",
+      "icons": [
+        {
+          "src": "/static/favicon.ico"
+        }
+      ]
+    }
+  ],
+  "icons": [
+    {
+      "src": "/static/faviconspa.ico"
+    }
+  ]
+}
