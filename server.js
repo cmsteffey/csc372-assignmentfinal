@@ -34,8 +34,35 @@ if(isNaN(listenDestination)){
 let multerObj = multer({});
 app.set("view engine", "ejs");
 app.set("views", import.meta.dirname + "/templates");
-app.use(multerObj.none())
 app.use("/static", express.static("static"));
+app.use((req, res, next) => {
+    if(req.url.startsWith("/spa?") && req.query.realpath){
+        req.url = req.query.realpath;
+    } else if (req.url.startsWith("/spaform/")) {
+        req.url = req.url.substring(8);
+    } else {
+        next();
+        return;
+    }
+    let oldSend = res.send.bind(res);
+    res.send = (body) => {
+        if(body.toLowerCase().startsWith("<!doctype html>")){
+            body = body.replace(/<a (?<before>[^>]*)href="\/(?<path>[^"?]*)(\?(?<query>[^"]*))?"(?<after>[^>]*)>/g, "<a $<before>href=\"/spa?realpath=/$<path>&$<query>\" $<after>>");
+            body = body.replace(/<form (?<before>[^>]*)action="\/(?<path>[^"]*)"(?<after>[^>]*)>/g, "<form $<before>action=\"/spaform/$<path>\" $<after>>");
+            body = body.replace(/<button (?<before>[^>]*)formaction="\/(?<path>[^"]*)"(?<after>[^>]*)>/g, "<button $<before>formaction=\"/spaform/$<path>\" $<after>>");
+        }
+        oldSend(body);
+    }
+    let oldRedirect = res.redirect.bind(res);
+    res.redirect = (p1, p2) => {
+        if(typeof p1 == "number"){
+            oldRedirect(p1, "/spa?realpath=" + p2);
+        }
+        oldRedirect("/spa?realpath=" + p1);
+    }
+    req.app.handle(req, res, next);
+})
+app.use(multerObj.none())
 app.use(authenticationMiddleware);
 app.get("/", (req, res) => {
     res.render("index");
