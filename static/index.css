@@ -1,13 +1,32 @@
 :root {
-    --theme-header-background: #444444;
-    --theme-header-main-text: #fff;
-    --theme-header-light-text: #999;
-    --theme-error-color: #c00;
-    --theme-error-text: hsl(from var(--theme-error-color) h calc(s * 3) calc(l * 0.3));
-    --theme-error-background: hsl(from var(--theme-error-color) h s calc(l * 2));
-    --theme-error-border: hsl(from var(--theme-error-color) h s calc(l * 0.5));
+    --theme-header-background-color: #444444;
+    --theme-header-main-text-color: #fff;
+    --theme-header-subtle-text-color: #999;
+    --theme-error-base-color: #c00;
+    --theme-error-text-color: hsl(from var(--theme-error-base-color) h calc(s * 3) calc(l * 0.3));
+    --theme-error-background-color: hsl(from var(--theme-error-base-color) h s calc(l * 2));
+    --theme-error-border-color: hsl(from var(--theme-error-base-color) h s calc(l * 0.5));
+    --theme-main-text-color: #000;
+    --theme-main-background-color: #fff;
+    --theme-table-border-color: #000;
+    --theme-table-section-background-color: #eee;
+    --theme-table-section-attention-color: #fbb;
+    --theme-table-row-border: #aaa;
+    --theme-table-subtle-text-color: #222;
+    --theme-table-row-hover-animation: background-blink;
     --header-height: 7%;
     --header-gap: 0%;
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --theme-main-text-color: #FFF;
+        --theme-main-background-color: #111;
+        --theme-table-border-color: #FFF;
+        --theme-table-section-background-color: #404040;
+        --theme-table-section-attention-color: #300;
+        --theme-table-row-border: #444;
+        --theme-table-subtle-text-color: #999;
+    }
 }
 main {
     position: absolute;
@@ -16,12 +35,14 @@ main {
     left: 0;
     padding: 0 10px;
     height: calc(100% - var(--header-height) + var(--header-gap));
-    overflow-y: scroll
+    overflow-y: scroll;
+    background: var(--theme-main-background-color);
+    color: var(--theme-main-text-color);
 }
 .error-div {
-    border: 1px solid var(--theme-error-border);
-    color: var(--theme-error-text);
-    background-color: var(--theme-error-background);
+    border: 1px solid var(--theme-error-border-color);
+    color: var(--theme-error-text-color);
+    background-color: var(--theme-error-background-color);
     border-radius: 4px;
     margin-bottom: 10px;
     width: max-content;
@@ -39,20 +60,20 @@ main {
 }
 .top-end {
     margin: 0;
-    margin-left: auto;
+     margin-left: auto;
 }
 .main-table tr:not(.section-name):has(td:hover) {
     animation: background-blink 1.5s infinite linear;
 }
 @keyframes background-blink{
     from {
-        background-color: hsl(from #ffffff h s calc(l * 0.85));
+        background-color: color-mix(in srgb, var(--theme-main-background-color) 80%, #808080 20%);
     }
     50% {
-        background-color: hsl(from #ffffff h s calc(l * 0.92));
+        background-color: color-mix(in srgb, var(--theme-main-background-color) 60%, #808080 40%);
     }
     to {
-         background-color: hsl(from #ffffff h s calc(l * 0.85));
+        background-color: color-mix(in srgb, var(--theme-main-background-color) 80%, #808080 20%);
     }
 }
 /*noinspection CssInvalidFunction*/

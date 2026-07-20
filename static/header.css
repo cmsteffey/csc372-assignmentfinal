@@ -4,7 +4,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    background-color: hsl(from var(--theme-header-background) h s calc(l * 0.9));
+    background-color: hsl(from var(--theme-header-background-color) h s calc(l * 0.9));
     font-size: 1.3em;
 }
 .header-item-container {
@@ -15,18 +15,18 @@
     align-items: center;
     gap: 2ch;
     height: 100%;
-    color: var(--theme-header-main-text);
+    color: var(--theme-header-main-text-color);
     width: calc(100% - (2 * 2ch));
 }
 .header-item-container a {
     text-decoration: underline;
-    color: var(--theme-header-main-text);
+    color: var(--theme-header-main-text-color);
 }
 .header-account {
     margin-left: auto;
 }
 .light {
-    color: var(--theme-header-light-text)
+    color: var(--theme-header-subtle-text-color)
 }
 .header-popout-button-div {
     display: none;
@@ -43,7 +43,7 @@
         appearance: none;
         border: none;
         background: none;
-        color: var(--theme-header-main-text);
+        color: var(--theme-header-main-text-color);
         font-size: 2em;
     }
 
