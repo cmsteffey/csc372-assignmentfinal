@@ -19,9 +19,10 @@
 }
 @media (prefers-color-scheme: dark) {
     :root {
-        --theme-main-text-color: #FFF;
+        --theme-header-background-color: #353535;
+        --theme-main-text-color: #eee;
         --theme-main-background-color: #111;
-        --theme-table-border-color: #FFF;
+        --theme-table-border-color: #eee;
         --theme-table-section-background-color: #404040;
         --theme-table-section-attention-color: #300;
         --theme-table-row-border: #444;
