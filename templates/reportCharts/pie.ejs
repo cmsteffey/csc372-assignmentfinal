@@ -6,7 +6,7 @@
         <%if(report.links && report.links[i]){%>
             <a href="<%=report.links[i]%>">
         <%}%>
-            <polygon stroke="black" stroke-width="0.006" fill="<%=report.colors[i]%>" points="0.5 0.5 <%=(i === 0 ? "0.5 0" : report.points[i-1].split(" ").slice(-2).join(" "))%> <%=(i === report.points.length - 1 ? report.points[i].split(' ').slice(0, -2).join(" ") + " 0.5 0" : report.points[i])%>">
+            <polygon style="stroke: var(--theme-main-background-color);" stroke-width="0.006" fill="<%=report.colors[i]%>" points="0.5 0.5 <%=(i === 0 ? "0.5 0" : report.points[i-1].split(" ").slice(-2).join(" "))%> <%=(i === report.points.length - 1 ? report.points[i].split(' ').slice(0, -2).join(" ") + " 0.5 0" : report.points[i])%>">
                 <title><%=report.names[i]%>&#xA;$<%=Math.floor(report.amounts[i]/100)%>.<%=(report.amounts[i] % 100).toString().padStart(2, '0')%></title>
             </polygon>
         <%if(report.links && report.links[i]){%>
@@ -19,7 +19,7 @@
     <% for (let i = 0; i < report.key.length; ++i) { %>
         <rect x="0" y="<%=i*15+3%>" width="10px" height="10px" fill="<%=report.key[i].color%>">
         </rect>
-        <text x="12" y="<%=i*15+6+3%>" text-anchor="start" dominant-baseline="middle">
+        <text style="stroke: var(--theme-main-text-color); fill: var(--theme-main-text-color);" x="12" y="<%=i*15+6+3%>" text-anchor="start" dominant-baseline="middle">
             <%=report.key[i].name%>
         </text>
     <% } %>
