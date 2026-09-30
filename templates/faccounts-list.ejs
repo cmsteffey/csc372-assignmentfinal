@@ -15,7 +15,7 @@
 
     <div class="top-container">
         <h1><%= typeof pageTitle !== "undefined" ? pageTitle : "Accounts" %></h1>
-        <button class="top-end" type="button" style="font-size: 1em" popovertarget="add-popover"><strong>Add...</strong></button>
+        <button class="top-end" type="button" style="font-size: 1em; anchor-name: --add-button;" popovertarget="add-popover"><strong>Add...</strong></button>
     </div>
     <h1 class="print-visible center">Account report for account <%= authenticatedUser.username %></h1>
     <% var reportTime = new Date() %>

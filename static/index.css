@@ -82,6 +82,7 @@ main {
     margin: 0;
     inset: auto;
     position: absolute;
+    position-anchor: --add-button;
     top: anchor(bottom);
     right: anchor(right);
 }
